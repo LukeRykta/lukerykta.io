@@ -4,3 +4,5 @@
 .nx/workspace-data
 /nx.bat
 /nx
+/node_modules/
+/.idea/
