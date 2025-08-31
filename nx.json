@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "installation": { "version": "21.4.1" },
+  "npmScope": "lukerykta",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint", "serve"]
+      }
+    }
+  },
+  "projects": {
+    "frontend": "frontend",
+    "backend": "backend"
+  }
+}

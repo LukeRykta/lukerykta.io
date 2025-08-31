@@ -1,0 +1,31 @@
+# --- Normalize line endings ---
+* text=auto
+
+# Gradle wrapper
+/gradlew text eol=lf
+*.bat    text eol=crlf
+*.jar    binary
+
+# Java / Gradle
+*.java   text diff=java
+*.gradle text
+
+# Node / Angular
+*.ts     text
+*.js     text
+*.json   text
+*.css    text
+*.html   text
+*.md     text
+
+# Terraform
+*.tf     text
+*.tfvars text
+
+# Images & binaries
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.svg    text
+*.woff2  binary

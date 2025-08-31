@@ -1,0 +1,22 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "frontend",
+  "root": "frontend",
+  "sourceRoot": "frontend/src",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": { "command": "cd frontend && pnpm ng serve" }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "command": "cd frontend && pnpm ng build" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "cd frontend && pnpm ng test" }
+    }
+  },
+  "tags": []
+}
