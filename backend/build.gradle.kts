@@ -2,6 +2,8 @@ plugins {
 	id("java")
 	id("org.springframework.boot") version "3.5.5"
 	id("io.spring.dependency-management") version "1.1.7"
+    id("org.flywaydb.flyway") version "11.11.2" // CLI tasks like flywayMigrate
+    java
 }
 
 group = "io.lukerykta"
@@ -25,19 +27,48 @@ repositories {
 }
 
 dependencies {
+    // App
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // DB driver
     runtimeOnly("com.mysql:mysql-connector-j")
+
+    // Flyway
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-mysql")
+
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:mysql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.named<Test>("test") {
+tasks.test {
     useJUnitPlatform()
+}
+
+tasks.bootRun {
+    systemProperty("spring.profiles.active", System.getProperty("spring.profiles.active") ?: "dev")
+}
+
+// Optional: configure Flyway Gradle tasks for non-prod targets.
+// For prod, prefer “migrate first” in CI using env vars/secrets there.
+flyway {
+    // Leave these empty here; override via env vars when running tasks (see below)
+    // url = System.getenv("DB_URL")
+    // user = System.getenv("DB_USER")
+    // password = System.getenv("DB_PASSWORD")
+    locations = arrayOf("classpath:db/migration")
 }
