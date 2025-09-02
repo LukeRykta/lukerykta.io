@@ -1,0 +1,21 @@
+<!-- Put wipe-out on THIS element (matches CSS .splash.wipe-out) -->
+<div class="splash fixed inset-0 z-[9999] bg-neutral-900 text-white overflow-hidden"
+     [class.wipe-out]="hidden()">
+    <div class="h-full w-full grid place-items-center">
+        <div class="relative flex flex-col items-center gap-4">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-wide
+                     [animation:logo-in_900ms_cubic-bezier(0.22,1,0.36,1)_both]"
+                [style.letterSpacing.px]="2">
+                lukerykta<span class="text-blue-400">.io</span>
+            </h1>
+
+            <div class="flex items-center gap-3">
+                <svg class="size-5 [animation:spin_1.1s_linear_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="3" class="opacity-20"></circle>
+                    <path d="M22 12a10 10 0 0 0-10-10" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <span class="text-sm uppercase tracking-wider text-neutral-300">Loading</span>
+            </div>
+        </div>
+    </div>
+</div>
