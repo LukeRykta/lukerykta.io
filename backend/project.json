@@ -9,19 +9,34 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "node scripts/gradle.mjs bootRun"
-      }
+      },
+      "cache": false
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/gradle.mjs build"
-      }
+        "command": "node scripts/gradle.mjs build",
+        "forwardAllArgs": true
+      },
+      "outputs": [
+        "backend/build/libs",
+        "backend/build/reports",
+        "backend/build/classes",
+        "backend/build/resources"
+      ]
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node scripts/gradle.mjs test"
-      }
+        "command": "node scripts/gradle.mjs test",
+        "forwardAllArgs": true
+      },
+      "outputs": [
+        "backend/build/test-results",
+        "backend/build/reports/tests",
+        "backend/build/reports/jacoco",
+        "backend/build/jacoco"
+      ]
     },
     "clean": {
       "executor": "nx:run-commands",

@@ -1,0 +1,14 @@
+mat-card {
+    align-content: center;
+}
+
+a {
+
+}
+
+.button {
+    border: #191919 1px solid;
+    &:hover {
+        background-color: red;
+    }
+}

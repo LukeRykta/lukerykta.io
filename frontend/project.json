@@ -7,15 +7,36 @@
   "targets": {
     "serve": {
       "executor": "nx:run-commands",
-      "options": { "command": "cd frontend && pnpm ng serve" }
+      "options": {
+        "command": "pnpm ng serve",
+        "cwd": "frontend",
+        "forwardAllArgs": true
+      },
+      "cache": false
     },
     "build": {
       "executor": "nx:run-commands",
-      "options": { "command": "cd frontend && pnpm ng build" }
+      "options": {
+        "command": "pnpm ng build",
+        "cwd": "frontend",
+        "forwardAllArgs": true
+      },
+      "outputs": [
+        "frontend/dist/frontend"
+      ]
     },
     "test": {
       "executor": "nx:run-commands",
-      "options": { "command": "cd frontend && pnpm ng test" }
+      "options": {
+        "command": "pnpm ng test --watch=false --browsers=ChromeHeadless",
+        "cwd": "frontend",
+        "forwardAllArgs": true
+      },
+      "outputs": [
+        "frontend/coverage",
+        "frontend/.angular/cache",
+        "frontend/test-results"
+      ]
     }
   },
   "tags": []
