@@ -27,7 +27,7 @@ class SecurityConfig {
                     "/health"
                 )
                 .permitAll()
-                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/api/**", "/me").authenticated()
                 .anyRequest().permitAll()
             )
 

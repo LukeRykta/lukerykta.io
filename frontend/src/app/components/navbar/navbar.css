@@ -1,1 +1,5 @@
-
+.parent-container img {
+    max-width: 100%;
+    height: auto; /* Maintains aspect ratio */
+    display: block; /* Removes any extra space below the image */
+}
