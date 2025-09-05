@@ -1,19 +1,22 @@
-import { Component, signal } from '@angular/core';
+import {Component, inject, Inject, PLATFORM_ID, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TgSplash } from './components/tg-splash/tg-splash';
 import {Navbar} from './components/navbar/navbar';
+import {Splash} from './components/splash/splash';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, TgSplash, Navbar],
+  imports: [RouterOutlet, Navbar, Splash],
   template: `
-    <div class="min-h-screen bg-neutral-900 text-white">
-      <app-navbar></app-navbar>
-      <router-outlet />
-    </div>
+    @if (showSplash()) {
+      <app-splash (done)="showSplash.set(false)"></app-splash>
+    }
+
+    <app-navbar></app-navbar>
+    <router-outlet />
   `
 })
 export class App {
   showSplash = signal(true);
+
 }

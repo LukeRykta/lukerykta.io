@@ -2,12 +2,10 @@ mat-card {
     align-content: center;
 }
 
-a {
-
-}
 
 .button {
     border: #191919 1px solid;
+    border-radius: 5px;
     &:hover {
         background-color: red;
     }

@@ -10,5 +10,9 @@
     "lint-staged": "^16.1.5",
     "nx": "^21.4.1",
     "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.2.6",
+    "@fontsource-variable/geist-mono": "^5.2.6"
   }
 }
