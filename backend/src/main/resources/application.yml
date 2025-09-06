@@ -12,7 +12,7 @@ spring:
     baseline-on-migrate: true
 
 server:
-  # Use 'framework' if you deploy behind a proxy/CDN so {baseUrl} is correct.
+  # Used 'framework' so {baseUrl} is correct when deploying behind a proxy/CDN
   forward-headers-strategy: framework
 ---
 # DEV
@@ -21,11 +21,15 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: ${DB_URL_DEV}
-    username: ${DB_USER_DEV}
-    password: ${DB_PASS_DEV}
+    url: jdbc:mysql://127.0.0.1:3306/appdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: appuser
+    password: appsecret
     hikari:
       maximum-pool-size: 10
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -41,14 +45,16 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASS}
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 20
       minimum-idle: 5
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: false
   flyway:
-    clean-disabled: true
+      url: ${spring.datasource.url}
+      user: ${spring.datasource.username}
+      password: ${spring.datasource.password}
 ---
 # OAUTH2 (applies to all profiles)
 app:
