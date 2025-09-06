@@ -1,24 +1,23 @@
-/* Start fully visible */
-.splash {
-    clip-path: inset(0% 0% 0% 0%);
-    transition: clip-path 700ms ease-in-out; /* the wipe animation duration */
+:host { display:block; }
+/* Overlay so it never pushes layout */
+/* splash.component.ts -> styles */
+.stage {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    background: #0a0a0a;
+    display: flex;
+    /* use modern viewport units so mobile UI chrome doesn’t shrink it */
+    width: 100dvw;
+    height: 100dvh;
 }
 
-/* Wipe from right -> left by clipping the RIGHT side to 100% */
-.splash.wipe-out {
-    clip-path: inset(0% 100% 0% 0%);
-}
-
-/* Smooth entrance for the logo */
-@keyframes logo-in {
-    0%   { transform: translateY(8px) scale(0.98); opacity: 0 }
-    60%  { transform: translateY(0)    scale(1.00); opacity: 1 }
-    100% { transform: translateY(0)    scale(1.00); opacity: 1 }
-}
-@keyframes spin { to { transform: rotate(360deg) } }
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-    [animation\:logo-in_900ms_cubic-bezier\(0\.22\,1\,0\.36\,1\)_both] { animation: none !important }
-    [animation\:spin_1\.1s_linear_infinite] { animation: none !important }
+.stage svg {
+    position: absolute;  /* or block; absolute is fine inside the fixed stage */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1; /* we’ll control fade with GSAP */
 }

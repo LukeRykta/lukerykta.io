@@ -1,11 +1,21 @@
 <nav class="bg-neutral-900 text-white px-6 py-3 flex items-center justify-between shadow-md">
-    <!-- Logo / Brand -->
-    <a routerLink="/" class="text-xl font-bold tracking-wide hover:text-blue-400 transition">
-        Luke Ryktarsyk
+    <!-- Left: Logo + Brand -->
+    <a routerLink="/" class="flex items-center gap-3 min-w-0">
+        <img
+                ngSrc="assets/icons/logo_transparent_v1.png"
+                width="585" height="585" alt="Luke Ryktarsyk logo"
+                class="h-8 md:h-9 lg:h-10 w-auto object-contain"
+                priority=""
+                fetchpriority="high"
+                decoding="async"
+        />
+        <span class="group text-xl font-bold tracking-wide transition-colors truncate">
+          <span class="group-hover:text-blue-400">lukerykta</span>.<span class="group-hover:text-blue-400">io</span>
+        </span>
     </a>
 
     <!-- Desktop Nav Links -->
-    <ul class="hidden md:flex space-x-8">
+    <ul class="hidden md:flex gap-8">
         <li><a routerLink="/" class="hover:text-blue-400 transition">Home</a></li>
         <li><a routerLink="/projects" class="hover:text-blue-400 transition">Projects</a></li>
         <li><a routerLink="/about" class="hover:text-blue-400 transition">About</a></li>
@@ -16,6 +26,7 @@
     <button
             (click)="toggleMenu()"
             class="md:hidden focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            aria-label="Toggle menu"
     >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
              viewBox="0 0 24 24" stroke="currentColor">
