@@ -1,0 +1,18 @@
+.actions {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+    justify-items: center;
+}
+.button {
+    border: white solid 1px;
+    border-radius: 4px;
+    padding: 16px;
+}
+.button:hover {
+    scale: 1.1;
+
+    box-shadow:
+            0 8px 30px rgba(0, 0, 0, 0.35),
+            0 0 0 1px rgba(255, 255, 255, 0.08);
+}

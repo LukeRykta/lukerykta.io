@@ -1,7 +1,8 @@
-import {Component, inject, Inject, PLATFORM_ID, signal} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Navbar} from './components/navbar/navbar';
-import {Splash} from './components/splash/splash';
+import { Navbar } from './components/navbar/navbar';
+import { Splash } from './components/splash/splash';
+import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,21 @@ import {Splash} from './components/splash/splash';
     <router-outlet />
   `
 })
-export class App {
+export class App implements OnInit {
   showSplash = signal(true);
+
+  constructor(private auth: AuthService) {}
+
+  ngOnInit() {
+    this.auth.bootstrapSession();
+    // Give bootstrapSession a tick to resolve; tweak if you want to await it.
+    setTimeout(() => {
+      if (this.auth.isLoggedIn()) {
+        this.auth.resumeFromStorage();
+      }
+    }, 200);
+  }
+
+
 
 }

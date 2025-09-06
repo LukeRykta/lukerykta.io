@@ -1,1 +1,8 @@
-<p>about works!</p>
+<app-center-card>
+
+    <button class="focus">
+        <lucide-icon name="thumbs-up" (click)="onLikeClick(ABOUT_POST_ID)"/>
+    </button>
+
+    <span class="like-count">{{ likeState().count }}</span>
+</app-center-card>
