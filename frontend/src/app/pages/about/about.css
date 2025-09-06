@@ -1,0 +1,14 @@
+.about-wrap {
+    min-height: 60vh;
+    display: grid;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px;
+}
+.focus:hover {
+    outline: white;
+    scale: 1.1;
+    color: #51a2ff;
+}
+
+.like-count { opacity: 0.8; }
