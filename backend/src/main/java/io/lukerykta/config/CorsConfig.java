@@ -13,14 +13,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class CorsConfig {
 
     /**
-     * Configure your frontend origin here or via application.yml/env:
+     * Configure frontend origin here or via application.yml/env:
      *
      * application.yml:
      *   app:
      *     frontend:
-     *       url: http://localhost:4200
+     *       url: <a href="http://localhost:4200">...</a>
      *
-     * In prod, override with https://lukerykta.io (no trailing slash).
+     * In prod, will override with https://lukerykta.io (no trailing slash).
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource(

@@ -1,0 +1,3 @@
+INSERT INTO roles (name) VALUES ('AUTHENTICATED_VISITOR'), ('ADMIN')
+    AS new
+ON DUPLICATE KEY UPDATE name = new.name;
