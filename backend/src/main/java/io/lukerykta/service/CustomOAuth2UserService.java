@@ -59,7 +59,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setActive(true);
 
         user = users.save(user);
-        log.info("Upserted user id={} provider={} roles={}", user.getId(), provider, user.getUserRoles());
 
         // --- ensure default role ---
         Role authRole = roles.findByName("AUTHENTICATED_VISITOR")
@@ -67,6 +66,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (!userRoles.existsByUserIdAndRoleId(user.getId(), authRole.getId())) {
             userRoles.save(new UserRole(user, authRole));
         }
+
+        log.info("Upserted user id={} provider={} roles={}",
+            user.getId(),
+            provider,
+            "replace me");
 
         // --- map DB roles -> authorities ---
         List<SimpleGrantedAuthority> authorities = users.findRoleNames(user.getId()).stream()

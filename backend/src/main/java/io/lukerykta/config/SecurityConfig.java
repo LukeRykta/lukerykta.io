@@ -1,6 +1,7 @@
 package io.lukerykta.config;
 
 import io.lukerykta.service.CustomOAuth2UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
@@ -58,7 +60,7 @@ class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(o -> o
-                .loginPage("/oauth") // your Angular login page
+                .loginPage(frontendUrl + "/oauth") // your Angular login page
                 .userInfoEndpoint(u -> u.userService(custom))
                 .successHandler((req, res, auth) -> {
                     String redirect = Optional.ofNullable(req.getParameter("redirect")).orElse("/");
@@ -72,7 +74,7 @@ class SecurityConfig {
                     .clearAuthentication(true)
                     .deleteCookies("JSESSIONID")
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
-                // If you prefer a redirect instead, use:
+                // redirect instead, use:
                 // .logoutSuccessUrl("/oauth?loggedOut=1")
             );
         return http.build();
