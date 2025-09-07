@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 import java.net.URLEncoder;
@@ -65,7 +64,9 @@ class SecurityConfig {
             )
             .oauth2Login(o -> o
                 .loginPage(frontendUrl + "/oauth") // Angular login page
-                .userInfoEndpoint(u -> u.userService(custom))
+                .userInfoEndpoint(u -> u
+                    .userService(custom)
+                    .oidcUserService(custom::loadOidcUser))
                 .successHandler((req, res, auth) -> {
                     String redirect = Optional.ofNullable(req.getParameter("redirect")).orElse("/");
                     log.debug("OAuth2 login success for user={}, redirect={}", auth.getName(), redirect);
