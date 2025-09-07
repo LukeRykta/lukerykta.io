@@ -3,11 +3,11 @@
     <mat-divider></mat-divider>
 
     <div class="actions">
-        <a class="button" href="/oauth2/authorization/google">
+        <button class="button" mat-flat-button color="primary" (click)="continueWith('google')">
             Google
-        </a>
-        <a class="button"  href="/oauth2/authorization/github">
-            GitHub
-        </a>
+        </button>
+        <button class="button" matButton="filled" (click)="continueWith('github')">
+            Github
+        </button>
     </div>
 </app-center-card>
