@@ -48,7 +48,7 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain app(HttpSecurity http, CustomOAuth2UserService custom) throws Exception {
-        log.info("Configuring app security filter chain");
+        log.info("Configuring APP security filter chain");
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
