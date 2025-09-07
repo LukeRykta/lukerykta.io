@@ -12,7 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -26,18 +32,29 @@ import java.util.HashMap;
 @Service
 @Transactional
 @AllArgsConstructor
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository users;
     private final RoleRepository roles;
     private final UserRoleRepository userRoles;
 
+    private final DefaultOAuth2UserService oauthDelegate = new DefaultOAuth2UserService();
+    private final OidcUserService oidcDelegate = new OidcUserService();
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest req) throws OAuth2AuthenticationException {
-        OAuth2User oauth = super.loadUser(req);
+        OAuth2User oauth = oauthDelegate.loadUser(req);
+        UserDetails details = process(req.getClientRegistration().getRegistrationId(), oauth);
+        return new DefaultOAuth2User(details.authorities(), details.attributes(), details.nameAttributeKey());
+    }
 
-        // Normalize provider id & attributes
-        String provider = req.getClientRegistration().getRegistrationId();
+    public OidcUser loadOidcUser(OidcUserRequest req) throws OAuth2AuthenticationException {
+        OidcUser oidc = oidcDelegate.loadUser(req);
+        UserDetails details = process(req.getClientRegistration().getRegistrationId(), oidc);
+        return new DefaultOidcUser(details.authorities(), req.getIdToken(), new OidcUserInfo(details.attributes()), details.nameAttributeKey());
+    }
+
+    private UserDetails process(String provider, OAuth2User oauth) {
         String providerId = Optional.ofNullable(oauth.getAttribute("sub"))
             .or(() -> Optional.ofNullable(oauth.getAttribute("id")))
             .map(Object::toString)
@@ -47,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.debug("OAuth2 login for provider={} providerId={}", provider, providerId);
 
         String email = attr(oauth, "email");
-        String name  = attr(oauth, "name");      // GitHub: may be null; consider "login"
+        String name  = attr(oauth, "name");
         if (name == null) name = attr(oauth, "login");
         String avatar = firstNonNull(attr(oauth, "picture"), attr(oauth, "avatar_url"));
 
@@ -58,20 +75,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             log.warn("OAuth2 provider {} did not supply name for providerId {}", provider, providerId);
         }
 
-        // --- upsert User ---
         User user;
         try {
             user = users.findByProviderAndProviderId(provider, providerId)
-                .orElseGet(() -> new User(provider, providerId)); // requires that convenience ctor
+                .orElseGet(() -> new User(provider, providerId));
 
-            if (email != null)       user.setEmail(email);
-            if (name != null)        user.setDisplayName(name);
-            if (avatar != null)      user.setAvatarUrl(avatar);
+            if (email != null)  user.setEmail(email);
+            if (name != null)   user.setDisplayName(name);
+            if (avatar != null) user.setAvatarUrl(avatar);
             user.setActive(true);
 
             user = users.save(user);
 
-            // --- ensure default role ---
             Role authRole = roles.findByName("AUTHENTICATED_VISITOR")
                 .orElseThrow(() -> new IllegalStateException("Missing seed role AUTHENTICATED_VISITOR"));
 
@@ -83,25 +98,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         List<String> roleNames = users.findRoleNames(user.getId());
 
-        log.info("Upserted user id={} provider={} roles={}",
-            user.getId(),
-            provider,
-            roleNames);
+        log.info("Upserted user id={} provider={} roles={}", user.getId(), provider, roleNames);
 
-        // --- map DB roles -> authorities ---
         List<SimpleGrantedAuthority> authorities = roleNames.stream()
             .map(rn -> new SimpleGrantedAuthority("ROLE_" + rn))
             .toList();
 
-        // --- expose attributes to the app (plus our DB user id) ---
         Map<String, Object> attrs = new HashMap<>(oauth.getAttributes());
         attrs.put("appUserId", user.getId());
 
-        // Choose the correct "name attribute key" for DefaultOAuth2User
-        // Google has "sub"; GitHub has "id" -- prefer Google's "sub" if present; else "id".
         String nameAttributeKey = attrs.containsKey("sub") ? "sub" : "id";
 
-        return new DefaultOAuth2User(authorities, attrs, nameAttributeKey);
+        return new UserDetails(authorities, attrs, nameAttributeKey);
     }
 
     @SuppressWarnings("unchecked")
@@ -112,4 +120,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private static String firstNonNull(String a, String b) {
         return a != null ? a : b;
     }
+
+    private record UserDetails(List<SimpleGrantedAuthority> authorities,
+                               Map<String, Object> attributes,
+                               String nameAttributeKey) {}
 }
