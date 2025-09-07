@@ -2,6 +2,7 @@
 import {inject, Injectable, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { catchError, of, tap } from 'rxjs';
 
 type PendingIntent = { kind: 'like'; postId: string } | { kind: 'bookmark'; postId: string } | { kind: 'none' };
 
@@ -16,13 +17,22 @@ export class AuthService {
   private router = inject(Router);
   private http = inject(HttpClient);
 
+  // backend origin for API calls (dev uses port 8080)
+  private readonly backendOrigin = window.location.hostname === 'localhost'
+    ? 'http://localhost:8080'
+    : window.location.origin;
+
   /** Call on app start to learn if the user is logged in (e.g., cookie-based session). */
   bootstrapSession() {
+    const url = `${this.backendOrigin}/api/me`;
     // Adjust to your API; expect 200 if logged in
-    return this.http.get('/api/me', { withCredentials: true }).subscribe({
-      next: () => this.authed.set(true),
-      error: () => this.authed.set(false)
-    });
+    return this.http.get(url, { withCredentials: true }).pipe(
+      tap({
+        next: () => this.authed.set(true),
+        error: () => this.authed.set(false)
+      }),
+      catchError(() => of(null)) // ensure observable completes
+    );
   }
 
   isLoggedIn() { return this.authed(); }
