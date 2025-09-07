@@ -1,6 +1,7 @@
 package io.lukerykta.controller;
 
 import io.lukerykta.dto.MeResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class MeController {
@@ -24,6 +26,7 @@ public class MeController {
         Authentication auth
     ) {
         if (user == null || auth == null || !auth.isAuthenticated()) {
+            log.warn("Unauthenticated access to /api/me");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "not_authenticated"));
         }
@@ -38,6 +41,8 @@ public class MeController {
         String provider = a.containsKey("sub") ? "google"
             : a.containsKey("id") ? "github"
             : null;
+        log.debug("Resolved provider={} providerId={}", provider, providerId);
+
 
         String email = (String) a.get("email");
         String displayName = (String) a.getOrDefault("name", a.getOrDefault("login", null));
@@ -49,6 +54,7 @@ public class MeController {
             .filter(s -> s.startsWith("ROLE_"))
             .map(s -> s.substring(5))
             .toList();
+        log.info("User id={} roles={}", appUserId, roles);
 
         return ResponseEntity.ok(new MeResponse(
             appUserId,
