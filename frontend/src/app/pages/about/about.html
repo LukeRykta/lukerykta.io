@@ -1,7 +1,11 @@
 <app-center-card>
 
     <button class="focus">
-        <lucide-icon name="thumbs-up" (click)="onLikeClick(ABOUT_POST_ID)"/>
+        <lucide-icon
+            name="thumbs-up"
+            class="like-icon"
+            [class.liked]="likeState().liked"
+            (click)="onLikeClick(ABOUT_POST_ID)"/>
     </button>
 
     <span class="like-count">{{ likeState().count }}</span>
