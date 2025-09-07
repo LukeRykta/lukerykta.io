@@ -11,7 +11,6 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-server:
   # Used 'framework' so {baseUrl} is correct when deploying behind a proxy/CDN
   forward-headers-strategy: framework
 ---
