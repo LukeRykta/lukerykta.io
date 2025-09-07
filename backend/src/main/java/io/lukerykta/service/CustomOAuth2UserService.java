@@ -44,32 +44,52 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .orElseThrow(() -> new IllegalStateException(
                 "OAuth2 user is missing both 'sub' (Google) and 'id' (GitHub) attributes"));
 
+        log.debug("OAuth2 login for provider={} providerId={}", provider, providerId);
+
         String email = attr(oauth, "email");
         String name  = attr(oauth, "name");      // GitHub: may be null; consider "login"
         if (name == null) name = attr(oauth, "login");
         String avatar = firstNonNull(attr(oauth, "picture"), attr(oauth, "avatar_url"));
 
-        // --- upsert User ---
-        User user = users.findByProviderAndProviderId(provider, providerId)
-            .orElseGet(() -> new User(provider, providerId)); // requires that convenience ctor
-
-        if (email != null)       user.setEmail(email);
-        if (name != null)        user.setDisplayName(name);
-        if (avatar != null)      user.setAvatarUrl(avatar);
-        user.setActive(true);
-
-        user = users.save(user);
-        log.info("Upserted user id={} provider={} roles={}", user.getId(), provider, user.getUserRoles());
-
-        // --- ensure default role ---
-        Role authRole = roles.findByName("AUTHENTICATED_VISITOR")
-            .orElseThrow(() -> new IllegalStateException("Missing seed role AUTHENTICATED_VISITOR"));
-        if (!userRoles.existsByUserIdAndRoleId(user.getId(), authRole.getId())) {
-            userRoles.save(new UserRole(user, authRole));
+        if (email == null) {
+            log.warn("OAuth2 provider {} did not supply email for providerId {}", provider, providerId);
+        }
+        if (name == null) {
+            log.warn("OAuth2 provider {} did not supply name for providerId {}", provider, providerId);
         }
 
+        // --- upsert User ---
+        User user;
+        try {
+            user = users.findByProviderAndProviderId(provider, providerId)
+                .orElseGet(() -> new User(provider, providerId)); // requires that convenience ctor
+
+            if (email != null)       user.setEmail(email);
+            if (name != null)        user.setDisplayName(name);
+            if (avatar != null)      user.setAvatarUrl(avatar);
+            user.setActive(true);
+
+            user = users.save(user);
+
+            // --- ensure default role ---
+            Role authRole = roles.findByName("AUTHENTICATED_VISITOR")
+                .orElseThrow(() -> new IllegalStateException("Missing seed role AUTHENTICATED_VISITOR"));
+
+            userRoles.saveIfNotExists(new UserRole(user, authRole));
+        } catch (RuntimeException e) {
+            log.error("Database error upserting user provider={} providerId={}", provider, providerId, e);
+            throw e;
+        }
+
+        List<String> roleNames = users.findRoleNames(user.getId());
+
+        log.info("Upserted user id={} provider={} roles={}",
+            user.getId(),
+            provider,
+            roleNames);
+
         // --- map DB roles -> authorities ---
-        List<SimpleGrantedAuthority> authorities = users.findRoleNames(user.getId()).stream()
+        List<SimpleGrantedAuthority> authorities = roleNames.stream()
             .map(rn -> new SimpleGrantedAuthority("ROLE_" + rn))
             .toList();
 
