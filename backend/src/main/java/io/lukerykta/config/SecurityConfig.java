@@ -28,6 +28,7 @@ class SecurityConfig {
 
     @Bean
     SecurityFilterChain api(HttpSecurity http) throws Exception {
+        log.info("Configuring API security filter chain");
         http.securityMatcher("/api/**")
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(a -> a
@@ -35,8 +36,10 @@ class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
-            .exceptionHandling(e -> e.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))  // no HTML redirects
+            .exceptionHandling(e -> e.authenticationEntryPoint((req, res, ex) -> {
+                log.warn("Unauthorized request to {}", req.getRequestURI());
+                res.sendError(HttpStatus.UNAUTHORIZED.value());
+            }))  // no HTML redirects
             .oauth2Login(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable);
@@ -45,6 +48,7 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain app(HttpSecurity http, CustomOAuth2UserService custom) throws Exception {
+        log.info("Configuring app security filter chain");
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
@@ -60,10 +64,11 @@ class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(o -> o
-                .loginPage(frontendUrl + "/oauth") // your Angular login page
+                .loginPage(frontendUrl + "/oauth") // Angular login page
                 .userInfoEndpoint(u -> u.userService(custom))
                 .successHandler((req, res, auth) -> {
                     String redirect = Optional.ofNullable(req.getParameter("redirect")).orElse("/");
+                    log.debug("OAuth2 login success for user={}, redirect={}", auth.getName(), redirect);
                     res.sendRedirect(frontendUrl + "/oauth/done?redirect=" +
                         URLEncoder.encode(redirect, StandardCharsets.UTF_8));
                 })
@@ -73,9 +78,11 @@ class SecurityConfig {
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
                     .deleteCookies("JSESSIONID")
-                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
-                // redirect instead, use:
-                // .logoutSuccessUrl("/oauth?loggedOut=1")
+                .logoutSuccessHandler((req, res, auth) -> {
+                    log.info("User {} logged out", auth != null ? auth.getName() : "anonymous");
+                    new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)
+                        .onLogoutSuccess(req, res, auth);
+                })
             );
         return http.build();
     }
