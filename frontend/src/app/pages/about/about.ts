@@ -44,7 +44,7 @@ export class About implements OnInit {
 
   onLikeClick(id: string) {
     const ok = this.authService.requireAuthOrRedirect({ kind: 'like', postId: id });
-    if (!ok) return;                 // redirected to /auth
+    if (!ok) return;                 // redirected to /oauth
     this.likeService.like(id).subscribe();  // user is already authed → perform action
   }
 

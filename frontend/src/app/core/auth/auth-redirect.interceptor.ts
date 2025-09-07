@@ -3,12 +3,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
-/** If your API is same-origin, leave empty string. Otherwise set your API base. */
+/** If API is same-origin, leave empty string. Otherwise set API base. */
 const API_BASE = 'http://localhost:4200'; // e.g. 'http://localhost:8080'
 
 /** Avoid redirect loops */
 const SKIP_PATHS = [
-  '/auth',
+  '/oauth',
   '/oauth2/authorization/google',
   '/oauth2/authorization/github'
 ];
