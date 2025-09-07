@@ -74,9 +74,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // --- ensure default role ---
             Role authRole = roles.findByName("AUTHENTICATED_VISITOR")
                 .orElseThrow(() -> new IllegalStateException("Missing seed role AUTHENTICATED_VISITOR"));
-            if (!userRoles.existsByUserIdAndRoleId(user.getId(), authRole.getId())) {
-                userRoles.save(new UserRole(user, authRole));
-            }
+
+            userRoles.saveIfNotExists(new UserRole(user, authRole));
         } catch (RuntimeException e) {
             log.error("Database error upserting user provider={} providerId={}", provider, providerId, e);
             throw e;

@@ -2,6 +2,7 @@ package io.lukerykta.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Slf4j
 @Table(
     name = "user_roles",
     uniqueConstraints = {
@@ -43,4 +45,19 @@ public class UserRole {
     @CreationTimestamp
     @Column(name = "assigned_at", nullable = false, updatable = false)
     private Instant assignedAt;
+
+    @PrePersist
+    void onCreate() {
+        String roleName = role != null ? role.getName() : null;
+        Long userId = user != null ? user.getId() : null;
+        log.debug("Persisting user-role link user={} role={}", userId, roleName);
+    }
+
+    @PreRemove
+    void onRemove() {
+        String roleName = role != null ? role.getName() : null;
+        Long userId = user != null ? user.getId() : null;
+        log.debug("Removing user-role link user={} role={}", userId, roleName);
+    }
+    
 }
