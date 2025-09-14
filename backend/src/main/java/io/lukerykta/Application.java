@@ -22,7 +22,7 @@ public class Application {
         } catch (Throwable e) {
             if ("org.springframework.boot.devtools.restart.SilentExitExceptionHandler$SilentExitException"
                 .equals(e.getClass().getName())) {
-                throw e;                      // let DevTools trigger the restart
+                throw e;                      // let DevTools trigger the restart quietly
             }
             log.error("lukerykta.io backend application failed to start.", e);
         }

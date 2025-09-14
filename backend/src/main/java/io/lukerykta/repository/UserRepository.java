@@ -25,6 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByProviderAndProviderId(@Param("provider") String provider,
                                                    @Param("providerId") String providerId);
 
+    /** Find a user by email, warning if missing. */
+    Optional<User> findByEmail(String email);
+
     default List<String> findRoleNames(Long userId) {
         List<String> roles = findRoleNamesInternal(userId);
         log.debug("Loaded roles {} for userId={}", roles, userId);
