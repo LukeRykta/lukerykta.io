@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import * as THREE from 'three';
@@ -24,11 +24,12 @@ export class InfiniteHero implements AfterViewInit {
   @ViewChild('cta', { static: true }) ctaRef!: ElementRef<HTMLDivElement>;
 
 
-
   ngAfterViewInit(): void {
     this.initThree();
     this.initGsap();
   }
+
+
 
   // @HostListener('window:resize', ['$event'])
   // onResize(event: Event) {
@@ -49,7 +50,8 @@ export class InfiniteHero implements AfterViewInit {
     const uniforms = {
       u_time: { value: 0 },
       u_resolution: { value: new THREE.Vector3(canvas.clientWidth, canvas.clientHeight, 1.0) },
-      iChannel0: { value: texture }
+      iChannel0: { value: texture },
+      u_baseColor: { value: new THREE.Color(0x8CA0B3) }
     } as Record<string, { value: any }>;
 
     const vertexShader = `
@@ -66,6 +68,7 @@ export class InfiniteHero implements AfterViewInit {
       uniform float u_time;
       uniform vec3 u_resolution;
       uniform sampler2D iChannel0;
+      uniform vec3 u_baseColor;
       #define STEP 256
       #define EPS .001
       float smin( float a, float b, float k ) {
@@ -120,22 +123,22 @@ export class InfiniteHero implements AfterViewInit {
       }
       void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         vec2 uv = (fragCoord.xy-.5*u_resolution.xy)/u_resolution.y;
-        vec3 rayOrigin = vec3(uv + vec2(0.,6.), -1. );
+        vec3 rayOrigin = vec3(uv + vec2(0.0, 6.0), -1.0 );
         vec3 rayDir = normalize(vec3(uv , 1.));
-        rayDir.zy = getRot(.15) * rayDir.zy;
+        rayDir.zy = getRot(0.15) * rayDir.zy;
         vec3 position = rayOrigin;
         float curDist; int nbStep = 0;
         for(; nbStep < STEP;++nbStep) {
-          curDist = map(position + (texture(iChannel0, position.xz) - .5).xyz * .005);
+          curDist = map(position + (texture(iChannel0, position.xz) - 0.5).xyz * 0.005);
           if(curDist < EPS) break;
           position += rayDir * curDist * .5;
         }
         float f;
-        float dist = distance(rayOrigin,position);
-        f = dist /(98.);
+        float dist = distance(rayOrigin, position);
+        f = dist / (98.0);
         f = float(nbStep) / float(STEP);
-        f *= .9;
-        vec3 col = vec3(f);
+        f *= 0.9;
+        vec3 col = u_baseColor * f;
         fragColor = vec4(col,1.0);
       }
       void main() {
