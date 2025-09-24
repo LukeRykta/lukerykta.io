@@ -2,6 +2,7 @@ package io.lukerykta.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Slf4j
 @Table(
     name = "users",
     uniqueConstraints = {
@@ -62,19 +64,27 @@ public class User {
     }
 
     @PrePersist
-    void onCreate() { this.createdAt = this.updatedAt = Instant.now(); }
+    void onCreate() {
+        this.createdAt = this.updatedAt = Instant.now();
+        log.debug("Creating user provider={} providerId={} email={}", provider, providerId, email);
+    }
 
     @PreUpdate
-    void onUpdate() { this.updatedAt = Instant.now(); }
+    void onUpdate() {
+        this.updatedAt = Instant.now();
+        log.debug("Updating user id={} provider={} providerId={}", id, provider, providerId);
+    }
 
     // Convenience helpers
     public void addRole(Role role) {
+        log.debug("Linking role {} to user {}", role.getName(), id);
         UserRole link = new UserRole(this, role);
         if (userRoles.add(link)) {
             role.getUserRoles().add(link);
         }
     }
     public void removeRole(Role role) {
+        log.debug("Unlinking role {} from user {}", role.getName(), id);
         userRoles.removeIf(ur -> {
             boolean match = ur.getRole().equals(role);
             if (match) { role.getUserRoles().remove(ur); ur.setUser(null); ur.setRole(null); }

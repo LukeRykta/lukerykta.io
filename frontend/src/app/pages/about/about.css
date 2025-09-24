@@ -1,0 +1,31 @@
+.about-wrap {
+    min-height: 60vh;
+    display: grid;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px;
+}
+.focus:hover {
+    outline: white;
+    scale: 1.1;
+    color: #51a2ff;
+}
+
+.like-count { opacity: 0.8; }
+
+.like-icon {
+    color: #888;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.like-icon.liked {
+    color: #e91e63;
+    animation: like-pop 0.3s ease;
+}
+
+@keyframes like-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}

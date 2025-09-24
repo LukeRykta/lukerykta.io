@@ -1,7 +1,8 @@
-import {Component, inject, Inject, PLATFORM_ID, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Navbar} from './components/navbar/navbar';
-import {Splash} from './components/splash/splash';
+import { Navbar } from './components/navbar/navbar';
+import { Splash } from './components/splash/splash';
+import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,11 +13,21 @@ import {Splash} from './components/splash/splash';
       <app-splash (done)="showSplash.set(false)"></app-splash>
     }
 
-    <app-navbar></app-navbar>
+<!--    <app-navbar></app-navbar>-->
     <router-outlet />
   `
 })
-export class App {
-  showSplash = signal(true);
+export class App implements OnInit {
+  showSplash = signal(false);
+
+  private auth = inject(AuthService);
+
+  ngOnInit() {
+    this.auth.bootstrapSession().subscribe(() => {
+      if (this.auth.isLoggedIn()) {
+        this.auth.resumeFromStorage();
+      }
+    });
+  }
 
 }

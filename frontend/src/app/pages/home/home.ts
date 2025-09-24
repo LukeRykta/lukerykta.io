@@ -1,16 +1,14 @@
-import { Component } from '@angular/core';
-import {MatButton} from '@angular/material/button';
-import {MatCard} from '@angular/material/card';
+import { Component, signal } from '@angular/core';
+import { InfiniteHero } from '../../components/infinite-hero/infinite-hero';
 
 @Component({
   selector: 'app-home',
   imports: [
-    MatButton,
-    MatCard
+    InfiniteHero
   ],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
-
+  showHero = signal(true);
 }
