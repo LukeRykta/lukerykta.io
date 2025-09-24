@@ -13,12 +13,12 @@ import { AuthService } from './core/auth/auth.service';
       <app-splash (done)="showSplash.set(false)"></app-splash>
     }
 
-    <app-navbar></app-navbar>
+<!--    <app-navbar></app-navbar>-->
     <router-outlet />
   `
 })
 export class App implements OnInit {
-  showSplash = signal(true);
+  showSplash = signal(false);
 
   private auth = inject(AuthService);
 
