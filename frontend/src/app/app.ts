@@ -13,7 +13,7 @@ import { AuthService } from './core/auth/auth.service';
       <app-splash (done)="showSplash.set(false)"></app-splash>
     }
 
-<!--    <app-navbar></app-navbar>-->
+    <app-navbar></app-navbar>
     <router-outlet />
   `
 })

@@ -1,11 +1,3 @@
 :host {
     display: block;
 }
-
-.stage svg .gsap {
-    fill: #146EF5 !important;
-}
-
-.stage svg .cross {
-    stroke: #146EF5 !important;
-}
