@@ -22,7 +22,7 @@
         "forwardAllArgs": true
       },
       "outputs": [
-        "frontend/dist/frontend"
+        "{projectRoot}/dist"
       ]
     },
     "test": {

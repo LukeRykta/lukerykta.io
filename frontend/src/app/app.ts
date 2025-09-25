@@ -1,24 +1,20 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
-import { Splash } from './components/splash/splash';
 import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Splash],
+  imports: [RouterOutlet, Navbar],
   template: `
-    @if (showSplash()) {
-      <app-splash (done)="showSplash.set(false)"></app-splash>
-    }
-
-<!--    <app-navbar></app-navbar>-->
-    <router-outlet />
+    <app-navbar></app-navbar>
+    <main class="pt-16 md:pt-20">
+      <router-outlet />
+    </main>
   `
 })
 export class App implements OnInit {
-  showSplash = signal(false);
 
   private auth = inject(AuthService);
 
