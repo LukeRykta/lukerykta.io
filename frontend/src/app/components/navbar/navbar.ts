@@ -5,7 +5,10 @@ import {NgOptimizedImage} from '@angular/common';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  imports: [RouterLink, NgOptimizedImage]
+  imports: [RouterLink, NgOptimizedImage],
+  host: {
+    class: 'block w-full'
+  }
 })
 export class Navbar {
   menuOpen = false;

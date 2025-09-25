@@ -1,19 +1,15 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "installation": { "version": "21.4.1" },
-  "npmScope": "lukerykta",
-
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "test", "lint"]
-      }
-    }
+  "installation": {
+    "version": "21.4.1"
   },
-
+  "npmScope": "lukerykta",
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "!{projectRoot}/build/**", "!{projectRoot}/dist/**"],
+    "default": [
+      "{projectRoot}/**/*",
+      "!{projectRoot}/build/**",
+      "!{projectRoot}/dist/**"
+    ],
     "gradle": [
       "{workspaceRoot}/settings.gradle.kts",
       "{workspaceRoot}/settings.gradle",
@@ -25,18 +21,37 @@
       "{projectRoot}/gradle.properties"
     ]
   },
-
   "targetDefaults": {
-    "build": { "inputs": ["default", "^default", "gradle"] },
-    "test":  { "inputs": ["default", "^default", "gradle"] },
-    "lint":  { "inputs": ["default", "^default"] },
-    "serve": { "cache": false }
+    "build": {
+      "inputs": [
+        "default",
+        "^default",
+        "gradle"
+      ],
+      "cache": true
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^default",
+        "gradle"
+      ],
+      "cache": true
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "cache": true
+    },
+    "serve": {
+      "cache": false
+    }
   },
-
   "projects": {
     "frontend": "frontend",
     "backend": "backend"
   },
-
   "defaultBase": "main"
 }

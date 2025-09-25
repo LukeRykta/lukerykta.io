@@ -29,13 +29,6 @@ export class InfiniteHero implements AfterViewInit {
     this.initGsap();
   }
 
-
-
-  // @HostListener('window:resize', ['$event'])
-  // onResize(event: Event) {
-  //   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  // }
-
   private initThree() {
     const canvas = this.canvasRef.nativeElement;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
