@@ -1,8 +1,9 @@
-import {AfterViewInit, OnDestroy, Component, ElementRef, ViewChild} from '@angular/core';
+import { AfterViewInit, OnDestroy, Component, ElementRef, ViewChild } from '@angular/core';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import * as THREE from 'three';
-import {RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 
 gsap.registerPlugin(SplitText);
 
@@ -12,7 +13,8 @@ gsap.registerPlugin(SplitText);
   templateUrl: './infinite-hero.html',
   styleUrl: './infinite-hero.css',
   imports: [
-    RouterLink
+    RouterLink,
+    LucideAngularModule,
   ]
 })
 export class InfiniteHero implements AfterViewInit, OnDestroy {
