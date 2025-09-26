@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, OnDestroy, Component, ElementRef, ViewChild} from '@angular/core';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import * as THREE from 'three';
@@ -15,7 +15,7 @@ gsap.registerPlugin(SplitText);
     RouterLink
   ]
 })
-export class InfiniteHero implements AfterViewInit {
+export class InfiniteHero implements AfterViewInit, OnDestroy {
   @ViewChild('root', { static: true }) rootRef!: ElementRef<HTMLDivElement>;
   @ViewChild('bg', { static: true }) bgRef!: ElementRef<HTMLDivElement>;
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -23,25 +23,44 @@ export class InfiniteHero implements AfterViewInit {
   @ViewChild('desc', { static: true }) pRef!: ElementRef<HTMLParagraphElement>;
   @ViewChild('cta', { static: true }) ctaRef!: ElementRef<HTMLDivElement>;
 
+  private renderer?: THREE.WebGLRenderer;
+  private scene?: THREE.Scene;
+  private camera?: THREE.OrthographicCamera;
+  private material?: THREE.ShaderMaterial;
+  private resizeObserver?: ResizeObserver;
+  private animationFrameId?: number;
+  private readonly resolution = new THREE.Vector3();
+  private pendingResize?: { width: number; height: number; dpr: number };
 
   ngAfterViewInit(): void {
     this.initThree();
     this.initGsap();
   }
 
-
-
-  // @HostListener('window:resize', ['$event'])
-  // onResize(event: Event) {
-  //   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  // }
+  ngOnDestroy(): void {
+    if (this.animationFrameId !== undefined) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = undefined;
+    }
+    this.resizeObserver?.disconnect();
+    this.renderer?.dispose();
+    this.material?.dispose();
+  }
 
   private initThree() {
     const canvas = this.canvasRef.nativeElement;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    this.renderer = renderer;
+
     const scene = new THREE.Scene();
+    this.scene = scene;
+
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    this.camera = camera;
 
     const data = new Uint8Array([128, 128, 128, 255]);
     const texture = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat);
@@ -157,22 +176,39 @@ export class InfiniteHero implements AfterViewInit {
       depthTest: false,
       depthWrite: false,
     });
+    this.material = material;
 
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
     scene.add(mesh);
 
     const animate = (t: number) => {
+      const pending = this.pendingResize;
+      if (pending) {
+        renderer.setPixelRatio(pending.dpr);
+        renderer.setSize(pending.width, pending.height, false);
+        this.resolution.set(pending.width * pending.dpr, pending.height * pending.dpr, 1.0);
+        this.pendingResize = undefined;
+      }
       material.uniforms["u_time"].value = t / 1000 * 0.5;
-      material.uniforms["u_resolution"].value.set(canvas.clientWidth, canvas.clientHeight, 1.0);
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+      material.uniforms["u_resolution"].value.copy(this.resolution);
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
+      this.animationFrameId = requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
+    this.animationFrameId = requestAnimationFrame(animate);
 
-    window.addEventListener('resize', () => {
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-    });
+    const updateSize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = rect.width;
+      const height = rect.height;
+      this.pendingResize = { width, height, dpr };
+    };
+
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(() => updateSize());
+    resizeObserver.observe(this.rootRef.nativeElement);
+    this.resizeObserver = resizeObserver;
   }
 
   private initGsap() {
