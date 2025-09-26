@@ -7,6 +7,8 @@ import { LucideAngularModule } from 'lucide-angular';
 
 gsap.registerPlugin(SplitText);
 
+import { ProjectShowcase } from '../project-showcase/project-showcase';
+
 @Component({
   selector: 'app-infinite-hero',
   standalone: true,
@@ -15,6 +17,7 @@ gsap.registerPlugin(SplitText);
   imports: [
     RouterLink,
     LucideAngularModule,
+    ProjectShowcase,
   ]
 })
 export class InfiniteHero implements AfterViewInit, OnDestroy {

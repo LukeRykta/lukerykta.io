@@ -38,6 +38,12 @@ public class Post {
     @Column(columnDefinition = "text", nullable = false)
     private String content;
 
+    @Column(name = "preview_image_url", length = 512)
+    private String previewImageUrl;
+
+    @Column(name = "external_url", length = 512)
+    private String externalUrl;
+
     @Column(name = "like_count", nullable = false)
     private int likeCount = 0;
 

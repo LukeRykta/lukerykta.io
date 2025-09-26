@@ -1,0 +1,5 @@
+:host {
+    display: block;
+    color: #e8ecf3;
+    background: radial-gradient(circle at top, rgba(40, 48, 80, 0.4), transparent 60%), #05070d;
+}
