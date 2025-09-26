@@ -33,9 +33,9 @@
         "forwardAllArgs": true
       },
       "outputs": [
-        "frontend/coverage",
-        "frontend/.angular/cache",
-        "frontend/test-results"
+        "{projectRoot}/coverage",
+        "{projectRoot}/.angular/cache",
+        "{projectRoot}/test-results"
       ]
     }
   },
