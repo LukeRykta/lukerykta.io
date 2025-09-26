@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { apiUrl } from './backend-origin';
 
 export interface ProjectPost {
   id: number;
@@ -28,7 +29,7 @@ export class ProjectPostsService {
   getTopProjects(limit = 4): Observable<ProjectPost[]> {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http
-      .get<ProjectPostResponse[]>(`/api/public/posts/projects`, { params })
+      .get<ProjectPostResponse[]>(apiUrl('/api/public/posts/projects'), { params })
       .pipe(
         map((posts) =>
           posts.map((post) => ({

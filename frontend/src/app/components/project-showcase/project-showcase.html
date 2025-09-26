@@ -26,12 +26,13 @@
                                     class="like-button"
                                     [class.is-liked]="like?.liked"
                                     [disabled]="isLikePending(project.id)"
+                                    [attr.aria-pressed]="like?.liked ?? false"
                                     (click)="toggleLike(project.id, like?.liked)">
-                                <lucide-icon name="heart" size="18"></lucide-icon>
-                                <span>{{ like?.count ?? project.likeCount }}</span>
+                                <lucide-icon name="thumbs-up" size="18" class="like-icon"></lucide-icon>
+                                <span class="like-count">{{ like?.count ?? project.likeCount }}</span>
                             </button>
                             <a class="view-button" [href]="project.externalUrl" target="_blank" rel="noopener">
-                                View
+                                <span class="view-label">View</span>
                                 <lucide-icon name="external-link" size="18"></lucide-icon>
                             </a>
                         </div>

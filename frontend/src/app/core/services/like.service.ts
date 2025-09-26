@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { apiUrl } from './backend-origin';
 
 export interface LikeState {
   postId: string;
@@ -30,7 +31,7 @@ export class LikeService {
     if (current.liked) {
       return of(current);
     }
-    return this.http.post<LikeResponse>(`/api/public/posts/${postId}/like`, {}).pipe(
+    return this.http.post<LikeResponse>(apiUrl(`/api/public/posts/${postId}/like`), {}).pipe(
       map((response) => {
         const next = { postId, liked: true, count: response.likeCount };
         subject.next(next);
@@ -45,7 +46,7 @@ export class LikeService {
     if (!current.liked) {
       return of(current);
     }
-    return this.http.post<LikeResponse>(`/api/public/posts/${postId}/unlike`, {}).pipe(
+    return this.http.post<LikeResponse>(apiUrl(`/api/public/posts/${postId}/unlike`), {}).pipe(
       map((response) => {
         const next = { postId, liked: false, count: response.likeCount };
         subject.next(next);

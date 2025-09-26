@@ -119,6 +119,7 @@
 .view-button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     border-radius: 999px;
     font-size: 0.95rem;
@@ -135,6 +136,21 @@
     cursor: pointer;
 }
 
+.like-button .like-icon {
+    color: rgba(240, 244, 255, 0.75);
+    transition: color 200ms ease, transform 200ms ease;
+}
+
+.like-button .like-count {
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+.like-button:hover:not(:disabled) .like-icon {
+    color: #ffffff;
+    transform: scale(1.08);
+}
+
 .like-button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.18);
     color: #ffffff;
@@ -144,6 +160,10 @@
 .like-button.is-liked {
     background: rgba(255, 99, 143, 0.22);
     border-color: rgba(255, 99, 143, 0.45);
+    color: #ff8cab;
+}
+
+.like-button.is-liked .like-icon {
     color: #ff8cab;
 }
 
@@ -158,6 +178,17 @@
     background: linear-gradient(135deg, rgba(92, 219, 149, 0.28), rgba(97, 175, 255, 0.25));
     color: #f5fbff;
     text-decoration: none;
+    text-align: center;
+}
+
+.view-button .view-label {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.view-button lucide-icon {
+    flex-shrink: 0;
 }
 
 .view-button:hover {
@@ -198,5 +229,8 @@
     .showcase {
         margin-top: clamp(1.5rem, 8vw, 2rem);
         border-radius: 28px;
+    }
+    .projects-grid > .project-card:nth-child(n + 4) {
+        display: none;
     }
 }
