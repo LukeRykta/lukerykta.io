@@ -7,43 +7,46 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
+@EnableConfigurationProperties(AppCorsProperties.class)
 public class CorsConfig {
 
-    /**
-     * Configure frontend origin here or via application.yml/env:
-     *
-     * application.yml:
-     *   app:
-     *     frontend:
-     *       url: <a href="http://localhost:4200">...</a>
-     *
-     * In prod, will override with https://lukerykta.io (no trailing slash).
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource(
+        AppCorsProperties corsProperties,
         @Value("${app.frontend.url:http://localhost:4200}") String frontendUrl) {
+        List<String> origins = corsProperties.allowedOrigins() == null ? List.of() : corsProperties.allowedOrigins()
+            .stream()
+            .map(origin -> origin == null ? "" : origin.replaceAll("/+$", ""))
+            .filter(origin -> !origin.isBlank())
+            .distinct()
+            .toList();
 
-        // Normalize: remove any trailing slashes to avoid origin parsing issues
-        String origin = frontendUrl.replaceAll("/+$", "");
+        if (origins.isEmpty()) {
+            String fallbackOrigin = frontendUrl == null ? "" : frontendUrl.replaceAll("/+$", "");
+            if (fallbackOrigin.isBlank()) {
+                throw new IllegalStateException(
+                    "CORS origins are empty; configure app.cors.allowed-origins or app.frontend.url");
+            }
+            origins = List.of(fallbackOrigin);
+            log.warn("Using fallback CORS origin from app.frontend.url; prefer app.cors.allowed-origins");
+        }
 
-        if (origin.isBlank()) {
-            log.error("CORS origin is empty; check app.frontend.url");
-        } else {
-            try {
-                URI.create(origin);
-            } catch (IllegalArgumentException ex) {
-                log.error("Invalid CORS origin: {}", origin, ex);
+        for (String origin : origins) {
+            URI parsedOrigin = URI.create(origin);
+            if (parsedOrigin.getScheme() == null || parsedOrigin.getHost() == null) {
+                throw new IllegalStateException("Invalid CORS origin (scheme/host required): " + origin);
             }
         }
 
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of(origin)); // exact scheme://host[:port]
+        cfg.setAllowedOrigins(origins); // exact scheme://host[:port]
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setExposedHeaders(List.of("Authorization", "Location"));
@@ -52,14 +55,10 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
 
-        log.info("CORS allowed origin: {}", origin);
+        log.info("CORS allowed origins: {}", origins);
         log.debug("CORS allowed methods: {}", cfg.getAllowedMethods());
         log.debug("CORS allowed headers: {}", cfg.getAllowedHeaders());
         log.debug("CORS exposed headers: {}", cfg.getExposedHeaders());
-
-        if ("http://localhost:4200".equals(origin)) {
-            log.warn("Using default CORS origin; verify deployment settings.");
-        }
 
         return source;
     }

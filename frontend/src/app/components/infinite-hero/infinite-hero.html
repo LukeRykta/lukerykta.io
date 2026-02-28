@@ -22,6 +22,17 @@
                 </div>
             </div>
         </div>
-        <app-project-showcase class="hero-showcase" />
+        <div class="showcase-dock" [class.is-hidden]="showcaseHidden()">
+            <app-project-showcase class="hero-showcase" />
+        </div>
     </div>
+    <button
+        type="button"
+        class="showcase-toggle"
+        [class.is-hidden]="showcaseHidden()"
+        [attr.aria-label]="showcaseHidden() ? 'Show project cards' : 'Hide project cards'"
+        [attr.aria-expanded]="!showcaseHidden()"
+        (click)="toggleShowcase()">
+        <lucide-icon name="chevron-down" size="24" class="chevron-icon"></lucide-icon>
+    </button>
 </div>

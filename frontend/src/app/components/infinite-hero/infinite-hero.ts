@@ -1,4 +1,4 @@
-import { AfterViewInit, OnDestroy, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, signal } from '@angular/core';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import * as THREE from 'three';
@@ -21,6 +21,8 @@ import { ProjectShowcase } from '../project-showcase/project-showcase';
   ]
 })
 export class InfiniteHero implements AfterViewInit, OnDestroy {
+  readonly showcaseHidden = signal(false);
+
   @ViewChild('root', { static: true }) rootRef!: ElementRef<HTMLDivElement>;
   @ViewChild('bg', { static: true }) bgRef!: ElementRef<HTMLDivElement>;
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -50,6 +52,10 @@ export class InfiniteHero implements AfterViewInit, OnDestroy {
     this.resizeObserver?.disconnect();
     this.renderer?.dispose();
     this.material?.dispose();
+  }
+
+  toggleShowcase(): void {
+    this.showcaseHidden.update((hidden) => !hidden);
   }
 
   private initThree() {
