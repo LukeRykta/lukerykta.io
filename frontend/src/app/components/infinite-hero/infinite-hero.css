@@ -1,3 +1,73 @@
 :host {
     display: block;
 }
+
+.hero-copy {
+    pointer-events: auto;
+}
+
+.hero-showcase {
+    pointer-events: auto;
+    width: 100%;
+}
+
+.showcase-dock {
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 520ms ease;
+    will-change: transform, opacity;
+}
+
+.showcase-dock.is-hidden {
+    transform: translateY(calc(100% + 10vh));
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.showcase-toggle {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(0.75rem, 2vh, 1.25rem);
+    transform: translateX(-50%);
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: none;
+    background: transparent;
+    color: rgba(242, 246, 255, 0.88);
+    transition: color 220ms ease, filter 220ms ease;
+    cursor: pointer;
+}
+
+.showcase-toggle .chevron-icon {
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.showcase-toggle.is-hidden .chevron-icon {
+    transform: rotate(180deg);
+}
+
+.showcase-toggle:hover {
+    color: #ffffff;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55));
+}
+
+.showcase-toggle:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+    .hero-showcase {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .showcase-dock,
+    .showcase-toggle,
+    .showcase-toggle .chevron-icon {
+        transition: none;
+    }
+}

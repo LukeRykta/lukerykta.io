@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:lukerykta;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: test
+            client-secret: test
+app:
+  frontend:
+    url: http://localhost:4200

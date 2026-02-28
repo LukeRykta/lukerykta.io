@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { CenterCard } from '../../components/center-card/center-card';
-import {MatButton} from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
+import { backendOrigin } from '../../core/services/backend-origin';
 
 @Component({
   selector: 'app-oauth',
@@ -14,11 +15,8 @@ import {MatButton} from '@angular/material/button';
   styleUrl: './oauth.css'
 })
 export class Oauth {
-  private readonly backendOrigin = window.location.hostname === 'localhost'
-    ? 'http://localhost:8080'
-    : window.location.origin;
 
   continueWith(provider: 'google' | 'github'): void {
-    window.location.href = `${this.backendOrigin}/oauth2/authorization/${provider}`;
+    window.location.href = `${backendOrigin()}/oauth2/authorization/${provider}`;
   }
 }

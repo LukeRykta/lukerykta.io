@@ -1,17 +1,20 @@
 spring:
   application:
     name: lukerykta-io
+  profiles:
+    default: dev
   jpa:
     open-in-view: false
     properties:
       hibernate.jdbc.time_zone: UTC
-      hibernate.format_sql: true
+      hibernate.format_sql: false
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-  # Used 'framework' so {baseUrl} is correct when deploying behind a proxy/CDN
+server:
+  # Use framework strategy so {baseUrl} is correct behind a proxy/CDN.
   forward-headers-strategy: framework
 ---
 # DEV
@@ -32,7 +35,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
 ---
 # PROD
 spring:

@@ -1,0 +1,49 @@
+<section class="showcase">
+    <div class="showcase-inner">
+        @if (loading()) {
+            <div class="showcase-status">Loading projects…</div>
+        } @else if (error()) {
+            <div class="showcase-status error">{{ error() }}</div>
+        } @else if (projects().length) {
+            <div class="projects-grid">
+                @for (project of projects(); track project.id) {
+                    <article class="project-card">
+                        <div class="project-media">
+                            @if (project.previewImageUrl) {
+                                <img [src]="project.previewImageUrl" [alt]="project.title" loading="lazy" />
+                            } @else {
+                                <div class="project-media__placeholder">Preview coming soon</div>
+                            }
+                        </div>
+                        <div class="project-content">
+                            <h3>{{ project.title }}</h3>
+                            <p>{{ project.content }}</p>
+                        </div>
+                        <div class="project-actions">
+                            @let like = likeState(project.id) | async;
+                            <button
+                                    type="button"
+                                    class="like-button"
+                                    [class.is-liked]="like?.liked"
+                                    [disabled]="isLikePending(project.id)"
+                                    [attr.aria-pressed]="like?.liked ?? false"
+                                    (click)="toggleLike(project.id, like?.liked)">
+                                <lucide-icon name="thumbs-up" size="18" class="like-icon"></lucide-icon>
+                                <span class="like-count">{{ like?.count ?? project.likeCount }}</span>
+                            </button>
+                            <a class="view-button" [href]="project.externalUrl" target="_blank" rel="noopener">
+                                <span class="view-label">View</span>
+                                <lucide-icon name="external-link" size="18"></lucide-icon>
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+        } @else {
+            <div class="showcase-status">Project posts will appear here soon.</div>
+        }
+    </div>
+    @if (likeError()) {
+        <div class="showcase-status error subtle">{{ likeError() }}</div>
+    }
+</section>
