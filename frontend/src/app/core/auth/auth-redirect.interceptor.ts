@@ -3,10 +3,9 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
-/** If API is same-origin, leave empty string. Otherwise set API base. */
-const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:8080'
-  : window.location.origin;
+import { backendOrigin } from '../services/backend-origin';
+
+const API_BASE = backendOrigin();
 
 /** Avoid redirect loops */
 const SKIP_PATHS = [

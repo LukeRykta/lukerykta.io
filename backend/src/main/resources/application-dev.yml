@@ -8,5 +8,5 @@ logging:
     root: INFO
     io.lukerykta: DEBUG               # your code package
     org.springframework.security: DEBUG
-    org.hibernate.SQL: DEBUG          # optional: show SQL
-    org.hibernate.orm.jdbc.bind: TRACE # optional: show SQL params
+    org.hibernate.SQL: OFF          # optional: show SQL
+    org.hibernate.orm.jdbc.bind: OFF # optional: show SQL params
