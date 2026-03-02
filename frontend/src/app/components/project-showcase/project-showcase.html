@@ -1,9 +1,62 @@
 <section class="showcase">
     <div class="showcase-inner">
         @if (loading()) {
-            <div class="showcase-status">Loading projects…</div>
+            <div class="projects-shell">
+                <div class="projects-grid projects-grid--skeleton" aria-hidden="true">
+                    @for (skeletonId of skeletonCardIds; track skeletonId) {
+                        <article class="project-card project-card--skeleton">
+                            <div class="project-media skeleton-block"></div>
+                            <div class="project-content">
+                                <div class="skeleton-stack skeleton-stack--title">
+                                    <div class="skeleton-line skeleton-line--title"></div>
+                                </div>
+                                <div class="skeleton-stack skeleton-stack--copy">
+                                    <div class="skeleton-line"></div>
+                                    <div class="skeleton-line skeleton-line--wide"></div>
+                                    <div class="skeleton-line"></div>
+                                    <div class="skeleton-line skeleton-line--short"></div>
+                                </div>
+                            </div>
+                            <div class="project-actions">
+                                <div class="skeleton-pill"></div>
+                                <div class="skeleton-pill skeleton-pill--cta"></div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            </div>
         } @else if (error()) {
-            <div class="showcase-status error">{{ error() }}</div>
+            <div class="projects-shell projects-shell--error">
+                <div class="projects-grid projects-grid--skeleton projects-grid--failed" aria-hidden="true">
+                @for (skeletonId of skeletonCardIds; track skeletonId) {
+                    <article class="project-card project-card--skeleton project-card--failed">
+                        <div class="project-media skeleton-block"></div>
+                        <div class="project-content">
+                            <div class="skeleton-stack skeleton-stack--title">
+                                <div class="skeleton-line skeleton-line--title"></div>
+                            </div>
+                            <div class="skeleton-stack skeleton-stack--copy">
+                                <div class="skeleton-line"></div>
+                                <div class="skeleton-line skeleton-line--wide"></div>
+                                <div class="skeleton-line"></div>
+                                <div class="skeleton-line skeleton-line--short"></div>
+                                <div class="skeleton-line"></div>
+                                <div class="skeleton-line skeleton-line--short"></div>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <div class="skeleton-pill"></div>
+                            <div class="skeleton-pill skeleton-pill--cta"></div>
+                        </div>
+                    </article>
+                }
+                </div>
+                <div class="showcase-alert" role="alert" aria-live="polite">
+                    <h3>Couldn&apos;t load projects</h3>
+                    <p>{{ error() }}</p>
+                    <button type="button" class="retry-button" (click)="reloadProjects()">Try again</button>
+                </div>
+            </div>
         } @else if (projects().length) {
             <div class="projects-grid">
                 @for (project of projects(); track project.id) {
@@ -16,8 +69,8 @@
                             }
                         </div>
                         <div class="project-content">
-                            <h3>{{ project.title }}</h3>
-                            <p>{{ project.content }}</p>
+                            <h3 class="project-title">{{ project.title }}</h3>
+                            <p class="project-description">{{ project.content }}</p>
                         </div>
                         <div class="project-actions">
                             @let like = likeState(project.id) | async;
