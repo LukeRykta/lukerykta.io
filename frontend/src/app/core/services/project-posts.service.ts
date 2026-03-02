@@ -41,7 +41,7 @@ export class ProjectPostsService {
             ...post,
             previewImageUrl: post.previewImageUrl ?? '',
             externalUrl: post.externalUrl ?? '#',
-            likedByCurrentUser: !!post.likedByCurrentUser
+            likedByCurrentUser: post.likedByCurrentUser
           }))
         )
       );

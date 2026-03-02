@@ -30,7 +30,7 @@ public class PostService {
     public record LikeMutationResult(int likeCount, boolean likedByCurrentUser) {}
 
     public List<PostSummaryDto> findTopProjects(int limit, Long currentUserId) {
-        int safeLimit = Math.max(1, Math.min(limit, 24));
+        int safeLimit = Math.clamp(limit, 1, 24);
         Pageable page = PageRequest.of(
             0,
             safeLimit,
