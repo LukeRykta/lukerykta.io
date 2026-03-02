@@ -13,6 +13,7 @@ export interface LikeState {
 interface LikeResponse {
   postId: number;
   likeCount: number;
+  likedByCurrentUser: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,13 +32,19 @@ export class LikeService {
     if (current.liked) {
       return of(current);
     }
-    return this.http.post<LikeResponse>(apiUrl(`/api/public/posts/${postId}/like`), {}).pipe(
-      map((response) => {
-        const next = { postId, liked: true, count: response.likeCount };
-        subject.next(next);
-        return next;
-      })
-    );
+    return this.http
+      .post<LikeResponse>(apiUrl(`/api/posts/${postId}/likes`), {}, { withCredentials: true })
+      .pipe(
+        map((response) => {
+          const next = {
+            postId,
+            liked: response.likedByCurrentUser,
+            count: response.likeCount
+          };
+          subject.next(next);
+          return next;
+        })
+      );
   }
 
   unlike(postId: string): Observable<LikeState> {
@@ -46,13 +53,19 @@ export class LikeService {
     if (!current.liked) {
       return of(current);
     }
-    return this.http.post<LikeResponse>(apiUrl(`/api/public/posts/${postId}/unlike`), {}).pipe(
-      map((response) => {
-        const next = { postId, liked: false, count: response.likeCount };
-        subject.next(next);
-        return next;
-      })
-    );
+    return this.http
+      .delete<LikeResponse>(apiUrl(`/api/posts/${postId}/likes`), { withCredentials: true })
+      .pipe(
+        map((response) => {
+          const next = {
+            postId,
+            liked: response.likedByCurrentUser,
+            count: response.likeCount
+          };
+          subject.next(next);
+          return next;
+        })
+      );
   }
 
   toggle(postId: string): Observable<LikeState> {

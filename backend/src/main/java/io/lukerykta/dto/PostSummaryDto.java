@@ -16,5 +16,6 @@ public class PostSummaryDto {
     String previewImageUrl;
     String externalUrl;
     int likeCount;
+    boolean likedByCurrentUser;
     Instant createdAt;
 }
