@@ -56,6 +56,10 @@ This document defines **how agents should propose, generate, and modify code** i
     - Use **Conventional Commits**.
     - Keep changes **small, focused**, and **explain rationale** in PR description.
     - Follow file structure & naming conventions below.
+10. **Agent reports**
+    - Any AI/agent-generated report, audit, deep-dive, or analysis document must be written under **`/AI-reports/`**.
+    - Do not place report files in repo root or feature folders unless explicitly requested by the user.
+    - `AI-reports/` is intentionally non-git-tracked to avoid workspace clutter.
 
 ---
 
@@ -203,8 +207,17 @@ root/
 - [ ] Tests updated/added
 - [ ] A11y considerations addressed
 - [ ] Bundle size/regression risk noted in PR
+- [ ] New AI-generated reports (if any) are in `/AI-reports/` only
 
 ---
 
+## 14) Keeping This Guide Current
+
+- `AGENTS.md` is a living document.
+- When the user gives new standing guidance (workflow, reporting, testing, conventions), agents should update this file in the same session when practical.
+- Keep updates minimal, explicit, and placed in the most relevant section.
+- If new guidance conflicts with existing rules, prefer the latest user instruction and revise outdated text.
+
+---
 By following this guide, agents can confidently modify and extend **lukerykta.io** while staying aligned with **current Angular conventions** and Luke’s architecture preferences.
 
