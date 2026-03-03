@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "installation": {
-    "version": "21.4.1"
+    "version": "22.5.3"
   },
   "npmScope": "lukerykta",
   "namedInputs": {
@@ -25,16 +25,14 @@
     "build": {
       "inputs": [
         "default",
-        "^default",
-        "gradle"
+        "^default"
       ],
       "cache": true
     },
     "test": {
       "inputs": [
         "default",
-        "^default",
-        "gradle"
+        "^default"
       ],
       "cache": true
     },
@@ -51,7 +49,8 @@
   },
   "projects": {
     "frontend": "frontend",
-    "backend": "backend"
+    "backend": "backend",
+    "frontend-e2e": "frontend-e2e"
   },
   "defaultBase": "main"
 }

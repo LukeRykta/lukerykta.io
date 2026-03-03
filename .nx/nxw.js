@@ -3,6 +3,9 @@
 // that your local installation matches nx.json.
 // See: https://nx.dev/recipes/installation/install-non-javascript for more info.
 
+
+
+
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require('fs');
 const path = require('path');
@@ -110,5 +113,4 @@ if (!process.env.NX_WRAPPER_SKIP_INSTALL) {
     ensureUpToDateInstallation();
 }
 
-// eslint-disable-next-line
 require('./installation/node_modules/nx/bin/nx');

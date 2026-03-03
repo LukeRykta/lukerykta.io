@@ -9,6 +9,7 @@ const API_BASE = backendOrigin();
 
 /** Avoid redirect loops */
 const SKIP_PATHS = [
+  '/api/me',
   '/oauth',
   '/oauth2/authorization/google',
   '/oauth2/authorization/github'

@@ -1,4 +1,4 @@
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Observable, TimeoutError, timeout } from 'rxjs';
@@ -12,7 +12,7 @@ import { AuthService } from '../../core/auth/auth.service';
 @Component({
   selector: 'app-project-showcase',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, NgOptimizedImage],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './project-showcase.html',
   styleUrl: './project-showcase.css'
 })

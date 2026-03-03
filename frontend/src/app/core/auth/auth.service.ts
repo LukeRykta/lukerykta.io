@@ -10,6 +10,10 @@ type PendingIntent = { kind: 'like'; postId: string } | { kind: 'bookmark'; post
 const REDIRECT_KEY = 'app.redirect.url';
 const INTENT_KEY   = 'app.pending.intent';
 
+interface SessionProbeResponse {
+  authenticated: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   // Backed by a real session probe in bootstrapSession()
@@ -22,9 +26,9 @@ export class AuthService {
   bootstrapSession() {
     const url = apiUrl('/api/me');
     // Adjust to your API; expect 200 if logged in
-    return this.http.get(url, { withCredentials: true }).pipe(
+    return this.http.get<SessionProbeResponse>(url, { withCredentials: true }).pipe(
       tap({
-        next: () => this.authed.set(true),
+        next: (response) => this.authed.set(!!response?.authenticated),
         error: () => this.authed.set(false)
       }),
       catchError(() => of(null)) // ensure observable completes

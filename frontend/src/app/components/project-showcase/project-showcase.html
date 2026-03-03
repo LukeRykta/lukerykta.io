@@ -59,11 +59,15 @@
             </div>
         } @else if (projects().length) {
             <div class="projects-grid">
-                @for (project of projects(); track project.id) {
+                @for (project of projects(); track project.id; let projectIndex = $index) {
                     <article class="project-card">
                         <div class="project-media">
                             @if (project.previewImageUrl) {
-                                <img [src]="project.previewImageUrl" [alt]="project.title" loading="lazy" />
+                                <img
+                                    [src]="project.previewImageUrl"
+                                    [alt]="project.title"
+                                    [attr.loading]="projectIndex === 0 ? 'eager' : 'lazy'"
+                                    [attr.fetchpriority]="projectIndex === 0 ? 'high' : null" />
                             } @else {
                                 <div class="project-media__placeholder">Preview coming soon</div>
                             }

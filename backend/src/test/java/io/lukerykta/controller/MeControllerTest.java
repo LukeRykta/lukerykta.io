@@ -45,11 +45,14 @@ class MeControllerTest {
     }
 
     @Test
-    void me_returns401_when_unauthenticated() throws Exception {
+    void me_returns_unauthenticated_payload_when_unauthenticated() throws Exception {
         mvc.perform(get("/api/me"))
-            .andExpect(status().isUnauthorized())
+            .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.error").value("not_authenticated"));
+            .andExpect(jsonPath("$.authenticated").value(false))
+            .andExpect(jsonPath("$.id").isEmpty())
+            .andExpect(jsonPath("$.roles").isArray())
+            .andExpect(jsonPath("$.roles.length()").value(0));
     }
 
     @Test

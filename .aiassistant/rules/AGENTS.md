@@ -82,7 +82,7 @@ This document defines **how agents should propose, generate, and modify code** i
 ### 3.4 Routing
 - **Standalone route configs** with lazy `loadComponent()`/`loadChildren()`.
 - Functional **guards/resolvers** (no classes).
-- Public routes remain public; protected actions trigger login flow.
+- Public routes remain public; protected actions trigger oauth flow.
 
 ### 3.5 HTTP & errors
 - `provideHttpClient(withFetch(), withInterceptors([...]))`.
