@@ -142,6 +142,7 @@ root/
 
 - **Lint/Format**: ESLint + Prettier; run on staged files.
 - **Tests**: Add/maintain unit tests for new logic; provide at least smoke tests for components with complex bindings.
+- **Frontend E2E policy**: For frontend changes that affect user-visible behavior, routing, auth-gated flows, or critical interactions, add/update Playwright coverage after confirming the change works as intended locally.
 - **Accessibility**: Verify keyboard paths, ARIA where needed, and color contrast.
 - **Images**: Validate `NgOptimizedImage` usage—no pixel‑based `sizes`.
 
@@ -205,6 +206,7 @@ root/
 - [ ] `NgOptimizedImage` correct with responsive `sizes`
 - [ ] Lazy/deferred where sensible
 - [ ] Tests updated/added
+- [ ] Frontend flow-impacting changes have E2E coverage added/updated after behavior is validated
 - [ ] A11y considerations addressed
 - [ ] Bundle size/regression risk noted in PR
 - [ ] New AI-generated reports (if any) are in `/AI-reports/` only
@@ -220,4 +222,3 @@ root/
 
 ---
 By following this guide, agents can confidently modify and extend **lukerykta.io** while staying aligned with **current Angular conventions** and Luke’s architecture preferences.
-

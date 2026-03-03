@@ -85,6 +85,7 @@ infra/*_override.tf.json
 
 .nx/cache
 .nx/workspace-data/
+.nx/installation/
 .husky/_/
 playwright-report/
 test-results/
