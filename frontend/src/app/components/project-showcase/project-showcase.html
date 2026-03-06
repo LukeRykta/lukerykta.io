@@ -1,106 +1,61 @@
 <section class="showcase">
-    <div class="showcase-inner">
-        @if (loading()) {
-            <div class="projects-shell">
-                <div class="projects-grid projects-grid--skeleton" aria-hidden="true">
-                    @for (skeletonId of skeletonCardIds; track skeletonId) {
-                        <article class="project-card project-card--skeleton">
-                            <div class="project-media skeleton-block"></div>
-                            <div class="project-content">
-                                <div class="skeleton-stack skeleton-stack--title">
-                                    <div class="skeleton-line skeleton-line--title"></div>
-                                </div>
-                                <div class="skeleton-stack skeleton-stack--copy">
-                                    <div class="skeleton-line"></div>
-                                    <div class="skeleton-line skeleton-line--wide"></div>
-                                    <div class="skeleton-line"></div>
-                                    <div class="skeleton-line skeleton-line--short"></div>
-                                </div>
-                            </div>
-                            <div class="project-actions">
-                                <div class="skeleton-pill"></div>
-                                <div class="skeleton-pill skeleton-pill--cta"></div>
-                            </div>
-                        </article>
-                    }
-                </div>
-            </div>
-        } @else if (error()) {
-            <div class="projects-shell projects-shell--error">
-                <div class="projects-grid projects-grid--skeleton projects-grid--failed" aria-hidden="true">
-                @for (skeletonId of skeletonCardIds; track skeletonId) {
-                    <article class="project-card project-card--skeleton project-card--failed">
-                        <div class="project-media skeleton-block"></div>
-                        <div class="project-content">
-                            <div class="skeleton-stack skeleton-stack--title">
-                                <div class="skeleton-line skeleton-line--title"></div>
-                            </div>
-                            <div class="skeleton-stack skeleton-stack--copy">
-                                <div class="skeleton-line"></div>
-                                <div class="skeleton-line skeleton-line--wide"></div>
-                                <div class="skeleton-line"></div>
-                                <div class="skeleton-line skeleton-line--short"></div>
-                                <div class="skeleton-line"></div>
-                                <div class="skeleton-line skeleton-line--short"></div>
-                            </div>
-                        </div>
-                        <div class="project-actions">
-                            <div class="skeleton-pill"></div>
-                            <div class="skeleton-pill skeleton-pill--cta"></div>
-                        </div>
-                    </article>
+    @if (loading()) {
+        <div class="gallery gallery--loading" data-testid="project-gallery-loading" aria-hidden="true">
+            <ul class="cards">
+                @for (skeletonId of [1, 2, 3, 4, 5, 6, 7, 8]; track skeletonId) {
+                    <li class="card card--skeleton"></li>
                 }
-                </div>
-                <div class="showcase-alert" role="alert" aria-live="polite">
-                    <h3>Couldn&apos;t load projects</h3>
-                    <p>{{ error() }}</p>
-                    <button type="button" class="retry-button" (click)="reloadProjects()">Try again</button>
-                </div>
+            </ul>
+        </div>
+    } @else if (error()) {
+        <div class="gallery gallery--error">
+            <div class="showcase-alert" role="alert" aria-live="polite">
+                <h3>Couldn&apos;t load projects</h3>
+                <p>{{ error() }}</p>
+                <button type="button" class="retry-button" (click)="reloadProjects()">Try again</button>
             </div>
-        } @else if (projects().length) {
-            <div class="projects-grid">
-                @for (project of projects(); track project.id; let projectIndex = $index) {
-                    <article class="project-card">
-                        <div class="project-media">
-                            @if (project.previewImageUrl) {
-                                <img
-                                    [src]="project.previewImageUrl"
-                                    [alt]="project.title"
-                                    [attr.loading]="projectIndex === 0 ? 'eager' : 'lazy'"
-                                    [attr.fetchpriority]="projectIndex === 0 ? 'high' : null" />
-                            } @else {
-                                <div class="project-media__placeholder">Preview coming soon</div>
-                            }
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">{{ project.title }}</h3>
-                            <p class="project-description">{{ project.content }}</p>
-                        </div>
-                        <div class="project-actions">
-                            @let like = likeState(project.id) | async;
-                            <button
-                                    type="button"
-                                    class="like-button"
-                                    [class.is-liked]="like?.liked"
-                                    [disabled]="isLikePending(project.id)"
-                                    [attr.aria-pressed]="like?.liked ?? false"
-                                    (click)="toggleLike(project.id, like?.liked)">
-                                <lucide-icon name="thumbs-up" size="18" class="like-icon"></lucide-icon>
-                                <span class="like-count">{{ like?.count ?? project.likeCount }}</span>
-                            </button>
-                            <a class="view-button" [href]="project.externalUrl" target="_blank" rel="noopener">
-                                <span class="view-label">View</span>
-                                <lucide-icon name="external-link" size="18"></lucide-icon>
+        </div>
+    } @else if (cards().length) {
+        <div #gallery class="gallery" data-testid="project-gallery">
+            <ul #cardsContainer class="cards" data-testid="project-cards">
+                @for (card of cards(); track card.key; let cardIndex = $index) {
+                    <li
+                        #cardEl
+                        class="card"
+                        [style.background-image]="backgroundImage(card)"
+                        [attr.data-testid]="'project-card-' + cardIndex">
+                        <article class="card-content">
+                            <h3>{{ card.title }}</h3>
+                            <p>{{ card.content }}</p>
+                            <a class="view-link" [href]="card.externalUrl" target="_blank" rel="noopener">
+                                View project
                             </a>
-                        </div>
-                    </article>
+                        </article>
+                    </li>
                 }
-            </div>
-        } @else {
+            </ul>
+
+            <button
+                type="button"
+                class="nav-chevron nav-chevron--prev"
+                data-testid="showcase-prev"
+                aria-label="Previous project card"
+                (click)="scrollPrev()">
+                &#10094;
+            </button>
+            <button
+                type="button"
+                class="nav-chevron nav-chevron--next"
+                data-testid="showcase-next"
+                aria-label="Next project card"
+                (click)="scrollNext()">
+                &#10095;
+            </button>
+        </div>
+        <div #dragProxy class="drag-proxy" aria-hidden="true"></div>
+    } @else {
+        <div class="gallery gallery--empty">
             <div class="showcase-status">Project posts will appear here soon.</div>
-        }
-    </div>
-    @if (likeError()) {
-        <div class="showcase-status error subtle">{{ likeError() }}</div>
+        </div>
     }
 </section>

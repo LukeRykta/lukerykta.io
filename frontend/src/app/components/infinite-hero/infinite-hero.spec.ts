@@ -1,18 +1,9 @@
-import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { ChevronDown, LucideAngularModule } from 'lucide-angular';
 
 import { InfiniteHero } from './infinite-hero';
-import { ProjectShowcase } from '../project-showcase/project-showcase';
-
-@Component({
-  selector: 'app-project-showcase',
-  standalone: true,
-  template: '<div data-testid="project-showcase-stub"></div>'
-})
-class ProjectShowcaseStub {}
 
 describe('InfiniteHero', () => {
   let component: InfiniteHero;
@@ -20,16 +11,12 @@ describe('InfiniteHero', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InfiniteHero, ProjectShowcaseStub],
+      imports: [InfiniteHero],
       providers: [
         provideRouter([]),
         importProvidersFrom(LucideAngularModule.pick({ ChevronDown }))
       ]
     })
-      .overrideComponent(InfiniteHero, {
-        remove: { imports: [ProjectShowcase] },
-        add: { imports: [ProjectShowcaseStub] }
-      })
       .compileComponents();
 
     fixture = TestBed.createComponent(InfiniteHero);

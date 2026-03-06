@@ -1,5 +1,22 @@
 :host {
     display: block;
     color: #e8ecf3;
-    background: radial-gradient(circle at top, rgba(40, 48, 80, 0.4), transparent 60%), #05070d;
+    --hero-footer-overlap: clamp(18rem, 32vh, 24rem);
+    background: #05070d;
+}
+
+.home-shell {
+    position: relative;
+}
+
+.home-hero {
+    display: block;
+    --hero-height: calc(100dvh + var(--hero-footer-overlap));
+}
+
+.home-footer {
+    position: relative;
+    z-index: 5;
+    margin-top: calc(-1 * var(--hero-footer-overlap));
+    margin-bottom: -1px;
 }

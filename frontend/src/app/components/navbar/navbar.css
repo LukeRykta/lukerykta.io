@@ -1,5 +1,50 @@
-.parent-container img {
-    max-width: 100%;
-    height: auto; /* Maintains aspect ratio */
-    display: block; /* Removes any extra space below the image */
+:host {
+    display: block;
+}
+
+:host header,
+:host nav,
+:host .mobile-menu {
+    background: transparent !important;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.brand-mark {
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.48));
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.36rem 0.78rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: rgba(242, 247, 255, 0.95);
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+    transition: color 180ms ease, filter 180ms ease, transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.nav-link:hover {
+    color: #9dd8ff;
+    filter: drop-shadow(0 0 8px rgba(157, 216, 255, 0.45));
+}
+
+.nav-link.is-active {
+    color: #ffffff;
+    border-color: rgba(176, 234, 255, 0.95);
+    background: rgba(16, 28, 46, 0.72);
+    text-shadow: 0 0 14px rgba(153, 227, 255, 0.6);
+    box-shadow: inset 0 0 0 1px rgba(168, 227, 255, 0.38), 0 10px 22px rgba(0, 0, 0, 0.36);
+}
+
+.mobile-menu {
+    text-align: right;
+}
+
+.mobile-link {
+    display: inline-flex;
 }
