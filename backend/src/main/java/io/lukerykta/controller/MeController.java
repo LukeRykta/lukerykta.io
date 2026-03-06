@@ -27,8 +27,16 @@ public class MeController {
     ) {
         if (user == null || auth == null || !auth.isAuthenticated()) {
             log.warn("Unauthenticated access to /api/me");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error", "not_authenticated"));
+            return ResponseEntity.ok(new MeResponse(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                false
+            ));
         }
 
         Map<String, Object> a = user.getAttributes();

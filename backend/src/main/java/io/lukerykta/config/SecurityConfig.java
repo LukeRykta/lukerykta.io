@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
@@ -26,12 +27,15 @@ class SecurityConfig {
     private String frontendUrl;
 
     @Bean
+    @Order(1)
     SecurityFilterChain api(HttpSecurity http) throws Exception {
         log.info("Configuring API security filter chain");
         http.securityMatcher("/api/**")
+            .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/me").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -46,9 +50,11 @@ class SecurityConfig {
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain app(HttpSecurity http, CustomOAuth2UserService custom) throws Exception {
         log.info("Configuring APP security filter chain");
         http
+            .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(

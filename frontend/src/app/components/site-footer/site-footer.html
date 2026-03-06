@@ -1,0 +1,72 @@
+<footer
+    #root
+    class="site-footer"
+    role="contentinfo"
+    aria-labelledby="footer-title"
+    data-testid="site-footer">
+    <div class="fx-layer" aria-hidden="true">
+        <div class="float-glow float-glow--one"></div>
+        <div class="float-glow float-glow--two"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="footer-content">
+        <div class="footer-shell">
+            <section class="col brand-col focus-item focus-item--1">
+                <img
+                    src="assets/icons/logo_transparent_v1.png"
+                    alt="Luke Ryktarsyk logo"
+                    class="brand-logo"
+                    width="72"
+                    height="72" />
+                <p class="eyebrow">Luke Ryktarsyk</p>
+                <h2 id="footer-title">Building software that scales and stays reliable.</h2>
+                <p class="brand-copy">
+                    Full-stack engineer focused on high-impact systems, clean architecture, and thoughtful user experiences.
+                </p>
+            </section>
+
+            <section class="col social-col focus-item focus-item--2" aria-label="Social links">
+                <h3>Connect</h3>
+                <a
+                    href="https://www.linkedin.com/in/luke-ryktarsyk/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="footer-linkedin">
+                    <span class="icon-pill">
+                        <lucide-icon name="linkedin" size="15"></lucide-icon>
+                    </span>
+                    <span>LinkedIn</span>
+                    <lucide-icon name="arrow-up-right" size="14"></lucide-icon>
+                </a>
+                <a
+                    href="https://github.com/LukeRykta"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="footer-github">
+                    <span class="icon-pill">
+                        <lucide-icon name="github" size="15"></lucide-icon>
+                    </span>
+                    <span>GitHub</span>
+                    <lucide-icon name="arrow-up-right" size="14"></lucide-icon>
+                </a>
+                <a
+                    href="https://devpost.com/LukeRykta?ref_content=user-portfolio&ref_feature=portfolio&ref_medium=global-nav"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="footer-devpost">
+                    <span class="icon-pill">
+                        <lucide-icon name="trophy" size="15"></lucide-icon>
+                    </span>
+                    <span>Devpost</span>
+                    <lucide-icon name="arrow-up-right" size="14"></lucide-icon>
+                </a>
+            </section>
+        </div>
+
+        <div class="footer-meta focus-item focus-item--3">
+            <span>&copy; {{ year }} lukerykta.io</span>
+            <span>Angular + GSAP + Three.js</span>
+        </div>
+    </div>
+</footer>

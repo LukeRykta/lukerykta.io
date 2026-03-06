@@ -21,6 +21,10 @@
         "cwd": "frontend",
         "forwardAllArgs": true
       },
+      "inputs": [
+        "default",
+        "^default"
+      ],
       "outputs": [
         "{projectRoot}/dist"
       ]
@@ -32,6 +36,10 @@
         "cwd": "frontend",
         "forwardAllArgs": true
       },
+      "inputs": [
+        "default",
+        "^default"
+      ],
       "outputs": [
         "{projectRoot}/coverage",
         "{projectRoot}/.angular/cache",

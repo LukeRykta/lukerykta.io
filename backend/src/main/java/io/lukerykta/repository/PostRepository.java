@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +25,31 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p.likeCount from Post p where p.id = :postId")
     Optional<Integer> findLikeCount(@Param("postId") Long postId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(
+        value = "insert into post_likes (post_id, user_id) " +
+            "select :postId, :userId " +
+            "where not exists (" +
+            "  select 1 from post_likes where post_id = :postId and user_id = :userId" +
+            ")",
+        nativeQuery = true
+    )
+    int insertLikeIfAbsent(@Param("postId") Long postId, @Param("userId") Long userId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(
+        value = "delete from post_likes where post_id = :postId and user_id = :userId",
+        nativeQuery = true
+    )
+    int deleteLike(@Param("postId") Long postId, @Param("userId") Long userId);
+
+    @Query(
+        value = "select post_id from post_likes where user_id = :userId and post_id in (:postIds)",
+        nativeQuery = true
+    )
+    List<Long> findLikedPostIds(
+        @Param("userId") Long userId,
+        @Param("postIds") Collection<Long> postIds
+    );
 }
