@@ -1,0 +1,29 @@
+{
+  "totalUsers": 100,
+  "totalVisits": 421,
+  "visitsToday": 9,
+  "visitsThisMonth": 87,
+  "visitsThisYear": 421,
+  "totalProjects": 6,
+  "totalLikes": 241,
+  "topRoutes": [
+    {
+      "routePath": "/",
+      "viewCount": 211,
+      "uniqueVisitorCount": 134,
+      "lastViewedAt": "2026-03-11T16:21:00Z"
+    },
+    {
+      "routePath": "/projects",
+      "viewCount": 128,
+      "uniqueVisitorCount": 91,
+      "lastViewedAt": "2026-03-11T15:10:00Z"
+    },
+    {
+      "routePath": "/about",
+      "viewCount": 82,
+      "uniqueVisitorCount": 64,
+      "lastViewedAt": "2026-03-10T19:42:00Z"
+    }
+  ]
+}

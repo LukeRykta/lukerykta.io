@@ -54,6 +54,9 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "last_auth_at", nullable = false)
+    private Instant lastAuthAt;
+
     // Bidirectional convenience (optional). Avoid eager loading.
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles = new HashSet<>();
@@ -65,7 +68,7 @@ public class User {
 
     @PrePersist
     void onCreate() {
-        this.createdAt = this.updatedAt = Instant.now();
+        this.createdAt = this.updatedAt = this.lastAuthAt = Instant.now();
         log.debug("Creating user provider={} providerId={} email={}", provider, providerId, email);
     }
 
@@ -73,6 +76,10 @@ public class User {
     void onUpdate() {
         this.updatedAt = Instant.now();
         log.debug("Updating user id={} provider={} providerId={}", id, provider, providerId);
+    }
+
+    public void markAuthenticatedNow() {
+        this.lastAuthAt = Instant.now();
     }
 
     // Convenience helpers

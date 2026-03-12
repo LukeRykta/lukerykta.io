@@ -1,13 +1,107 @@
-<app-center-card>
-    <h1>Sign in to continue</h1>
-    <mat-divider></mat-divider>
+<div #pageRoot class="oauth-page">
+  <canvas #surface class="oauth-surface" aria-hidden="true"></canvas>
 
-    <div class="actions">
-        <button class="button" mat-flat-button color="primary" (click)="continueWith('google')">
-            Google
-        </button>
-        <button class="button" matButton="filled" (click)="continueWith('github')">
-            Github
-        </button>
+  <section class="auth-panel" [attr.aria-busy]="pendingProvider() !== null">
+    <div class="eyebrow">
+      <span class="eyebrow-icon" aria-hidden="true">
+        <lucide-icon [img]="sparklesIcon" size="15"></lucide-icon>
+      </span>
+      Secure session gateway
     </div>
-</app-center-card>
+
+    <div class="auth-hero">
+      <div class="auth-header">
+        <p class="auth-kicker">OAuth Access</p>
+        <h1 class="auth-title">Continue with a trusted account.</h1>
+        <p class="auth-copy">
+          Authentication stays with the provider, then the app resumes at
+          <span class="return-chip">{{ redirectLabel() }}</span>.
+        </p>
+      </div>
+
+      <div class="auth-sigil" aria-hidden="true">
+        <svg viewBox="0 0 140 140" fill="none" role="presentation">
+          <defs>
+            <linearGradient id="sigilStroke" x1="28" y1="18" x2="112" y2="122" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f5fbff" stop-opacity="0.86"></stop>
+              <stop offset="58%" stop-color="#7fd8ff" stop-opacity="0.72"></stop>
+              <stop offset="100%" stop-color="#ffc98e" stop-opacity="0.74"></stop>
+            </linearGradient>
+            <radialGradient id="sigilFill" cx="50%" cy="50%" r="58%">
+              <stop offset="0%" stop-color="#f7fcff" stop-opacity="0.9"></stop>
+              <stop offset="55%" stop-color="#7fd8ff" stop-opacity="0.18"></stop>
+              <stop offset="100%" stop-color="#7fd8ff" stop-opacity="0"></stop>
+            </radialGradient>
+          </defs>
+
+          <circle cx="70" cy="70" r="18" fill="url(#sigilFill)"></circle>
+
+          <g class="sigil-rotor sigil-rotor--outer">
+            <circle class="sigil-ring" cx="70" cy="70" r="42"></circle>
+            <path class="sigil-line" d="M70 28V46"></path>
+            <path class="sigil-line" d="M112 70H94"></path>
+            <circle class="sigil-node" cx="70" cy="28" r="4.5"></circle>
+            <circle class="sigil-node sigil-node--warm" cx="112" cy="70" r="4.5"></circle>
+          </g>
+
+          <g class="sigil-rotor sigil-rotor--inner">
+            <ellipse class="sigil-ring sigil-ring--inner" cx="70" cy="70" rx="24" ry="34"></ellipse>
+            <path class="sigil-line sigil-line--soft" d="M49 90L60 79L79 62L91 51"></path>
+            <circle class="sigil-node" cx="49" cy="90" r="3.75"></circle>
+            <circle class="sigil-node" cx="91" cy="51" r="3.75"></circle>
+          </g>
+
+          <circle class="sigil-core" cx="70" cy="70" r="10"></circle>
+        </svg>
+      </div>
+    </div>
+
+    @if (pendingProviderOption()) {
+      <div class="auth-status" role="status" aria-live="polite" aria-atomic="true">
+        <span class="auth-status-icon" aria-hidden="true">
+          <lucide-icon [img]="sparklesIcon" size="16"></lucide-icon>
+        </span>
+        <span>{{ pendingStatus() }}</span>
+      </div>
+    }
+
+    <div class="provider-list">
+      @for (provider of providers; track provider.id) {
+        <button
+          type="button"
+          class="provider-button"
+          [class.provider-button--google]="provider.id === 'google'"
+          [class.provider-button--github]="provider.id === 'github'"
+          [class.is-pending]="pendingProvider() === provider.id"
+          [disabled]="pendingProvider() !== null"
+          [attr.data-testid]="'provider-' + provider.id"
+          [attr.aria-label]="'Continue with ' + provider.label"
+          (click)="continueWith(provider.id)">
+          <span class="provider-brand" aria-hidden="true">
+            @if (provider.id === 'google') {
+              <svg class="google-glyph" viewBox="0 0 24 24" role="presentation">
+                <path fill="#EA4335" d="M12 10.2v4.17h5.95c-.26 1.34-1.04 2.47-2.2 3.23l3.56 2.77c2.08-1.92 3.27-4.74 3.27-8.07 0-.76-.07-1.5-.19-2.2H12Z"></path>
+                <path fill="#4285F4" d="M12 22c2.97 0 5.46-.98 7.28-2.63l-3.56-2.77c-.99.67-2.26 1.07-3.72 1.07-2.86 0-5.28-1.94-6.14-4.54H2.2v2.85A10.99 10.99 0 0 0 12 22Z"></path>
+                <path fill="#FBBC05" d="M5.86 13.13a6.56 6.56 0 0 1 0-4.25V6.03H2.2a11 11 0 0 0 0 9.95l3.66-2.85Z"></path>
+                <path fill="#34A853" d="M12 6.33c1.61 0 3.05.55 4.19 1.64l3.14-3.14C17.45 3.09 14.97 2 12 2A10.99 10.99 0 0 0 2.2 6.03l3.66 2.85C6.72 8.27 9.14 6.33 12 6.33Z"></path>
+              </svg>
+            } @else {
+              <lucide-icon [img]="githubIcon" size="20"></lucide-icon>
+            }
+          </span>
+
+          <span class="provider-copy">
+            <strong>Continue with {{ provider.label }}</strong>
+          </span>
+
+          <lucide-icon class="provider-arrow" [img]="arrowUpRightIcon" size="18"></lucide-icon>
+        </button>
+      }
+    </div>
+
+    <p class="auth-return">
+      <span>Session return target</span>
+      <strong>{{ redirectPath() ?? '/' }}</strong>
+    </p>
+  </section>
+</div>

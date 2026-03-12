@@ -1,5 +1,6 @@
 package io.lukerykta.controller;
 
+import io.lukerykta.service.UserVisitService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -15,11 +16,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MeControllerTest {
 
     @Autowired MockMvc mvc;
+    @MockitoBean UserVisitService userVisits;
 
     // Minimal chain, no oauth2Login(), avoids pulling client beans
     @TestConfiguration
@@ -53,6 +57,8 @@ class MeControllerTest {
             .andExpect(jsonPath("$.id").isEmpty())
             .andExpect(jsonPath("$.roles").isArray())
             .andExpect(jsonPath("$.roles.length()").value(0));
+
+        then(userVisits).shouldHaveNoInteractions();
     }
 
     @Test
@@ -70,6 +76,8 @@ class MeControllerTest {
             .andExpect(jsonPath("$.roles[0]").value("AUTHENTICATED_VISITOR"))
             .andExpect(jsonPath("$.roles[1]").value("ADMIN"))
             .andExpect(jsonPath("$.authenticated").value(true));
+
+        then(userVisits).should().recordVisit(42L);
     }
 
     @Test
@@ -90,6 +98,8 @@ class MeControllerTest {
             .andExpect(jsonPath("$.provider").value("github"))
             .andExpect(jsonPath("$.providerId").value("gh-999"))
             .andExpect(jsonPath("$.displayName").value("octocat"));
+
+        then(userVisits).should().recordVisit(7L);
     }
 
     private static OAuth2AuthenticationToken googleToken() {

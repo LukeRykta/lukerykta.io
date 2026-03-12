@@ -1,8 +1,9 @@
 package io.lukerykta.controller;
 
 import io.lukerykta.dto.MeResponse;
+import io.lukerykta.service.UserVisitService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,8 +18,11 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class MeController {
+
+    private final UserVisitService userVisits;
 
     @GetMapping("/me")
     public ResponseEntity<?> me(
@@ -50,7 +54,7 @@ public class MeController {
             : a.containsKey("id") ? "github"
             : null;
         log.debug("Resolved provider={} providerId={}", provider, providerId);
-
+        userVisits.recordVisit(appUserId);
 
         String email = (String) a.get("email");
         String displayName = (String) a.getOrDefault("name", a.getOrDefault("login", null));
