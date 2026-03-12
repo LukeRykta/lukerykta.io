@@ -1,0 +1,329 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.overview-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.overview-shell.is-loading {
+  min-height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.overview-shell.is-loading > .dashboard-section-loader {
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-kicker {
+  margin: 0 0 0.3rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(203, 232, 250, 0.72);
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Manrope', 'Segoe UI', sans-serif;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  line-height: 0.96;
+}
+
+.section-heading p:last-child,
+.section-state {
+  margin: 0.6rem 0 0;
+  color: rgba(228, 236, 248, 0.72);
+}
+
+.section-state--error {
+  color: #ffc2b3;
+}
+
+.section-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.82rem;
+  border: 1px solid rgba(196, 231, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(5, 10, 18, 0.42);
+  color: rgba(240, 247, 255, 0.92);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.section-refresh:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(196, 231, 255, 0.34);
+  background: rgba(14, 24, 40, 0.82);
+}
+
+.section-refresh:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.section-refresh:focus-visible {
+  outline: 2px solid rgba(188, 231, 255, 0.78);
+  outline-offset: 3px;
+}
+
+.section-refresh lucide-icon.is-spinning {
+  animation: overview-refresh-spin 0.9s linear infinite;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.stat-card {
+  padding: 1rem;
+  border: 1px solid rgba(176, 234, 255, 0.12);
+  border-radius: 22px;
+  background: rgba(4, 9, 17, 0.32);
+}
+
+.visit-column {
+  display: grid;
+  gap: 0;
+  align-content: start;
+}
+
+.visit-column.is-expanded {
+  gap: 0.75rem;
+}
+
+.stat-card--highlight {
+  background:
+    linear-gradient(160deg, rgba(16, 31, 54, 0.84), rgba(7, 13, 24, 0.56)),
+    rgba(4, 9, 17, 0.32);
+  border-color: rgba(176, 234, 255, 0.24);
+}
+
+.stat-card--visits {
+  display: grid;
+}
+
+.visit-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.visit-label,
+.visit-detail-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.visit-label {
+  color: rgba(241, 247, 255, 0.92);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.visit-label lucide-icon,
+.visit-detail-label lucide-icon {
+  opacity: 0.84;
+}
+
+.visit-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(196, 231, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(5, 10, 18, 0.42);
+  color: rgba(240, 247, 255, 0.92);
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.visit-toggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(196, 231, 255, 0.34);
+  background: rgba(14, 24, 40, 0.82);
+}
+
+.visit-toggle:focus-visible {
+  outline: 2px solid rgba(188, 231, 255, 0.78);
+  outline-offset: 3px;
+}
+
+.visit-summary {
+  margin: 0;
+  color: rgba(225, 236, 248, 0.72);
+  line-height: 1.55;
+}
+
+.visit-breakdown {
+  display: grid;
+  gap: 0.7rem;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.stat-card--visit-detail {
+  background:
+    linear-gradient(180deg, rgba(9, 19, 33, 0.82), rgba(5, 10, 18, 0.72)),
+    rgba(4, 9, 17, 0.32);
+}
+
+.visit-detail-label {
+  color: rgba(228, 236, 248, 0.72);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stat-card > span {
+  display: block;
+  color: rgba(228, 236, 248, 0.7);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.routes-panel {
+  padding: 1rem;
+  border: 1px solid rgba(176, 234, 255, 0.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(160deg, rgba(10, 19, 34, 0.86), rgba(5, 10, 18, 0.66)),
+    rgba(4, 9, 17, 0.32);
+}
+
+.routes-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.routes-panel h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+}
+
+.routes-panel-heading p:last-child {
+  margin: 0.45rem 0 0;
+  color: rgba(228, 236, 248, 0.72);
+}
+
+.route-list {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.route-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(176, 234, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(5, 10, 18, 0.42);
+}
+
+.route-row-copy {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.route-row-copy code {
+  color: rgba(245, 250, 255, 0.94);
+  font-size: 0.96rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-row-copy span,
+.route-row-metric span {
+  color: rgba(228, 236, 248, 0.68);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.route-row-metric {
+  display: grid;
+  justify-items: end;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.route-row-metric strong {
+  display: block;
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .section-heading-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .visit-card-topline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route-row-metric {
+    justify-items: start;
+  }
+}
+
+@keyframes overview-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

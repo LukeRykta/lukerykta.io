@@ -35,6 +35,14 @@
                    [class.is-active]="isActive('/about')"
                    class="nav-link">About</a>
             </li>
+            @if (isAdmin()) {
+                <li>
+                    <a routerLink="/dashboard"
+                       routerLinkActive="is-active"
+                       [class.is-active]="isActive('/dashboard', false)"
+                       class="nav-link">Dashboard</a>
+                </li>
+            }
             <li>
                 <a routerLink="/oauth"
                    routerLinkActive="is-active"
@@ -75,6 +83,12 @@
                [routerLinkActiveOptions]="{ exact: true }"
                [class.is-active]="isActive('/about')"
                class="nav-link mobile-link">About</a>
+            @if (isAdmin()) {
+                <a routerLink="/dashboard"
+                   routerLinkActive="is-active"
+                   [class.is-active]="isActive('/dashboard', false)"
+                   class="nav-link mobile-link">Dashboard</a>
+            }
             <a routerLink="/oauth"
                routerLinkActive="is-active"
                [routerLinkActiveOptions]="{ exact: true }"

@@ -12,6 +12,7 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
 
     // Check if a user already has a role
     boolean existsByUserIdAndRoleId(Long userId, Long roleId);
+    long countByRole_Name(String roleName);
 
     /**
      * Assign a role to a user, logging duplicates and creations.

@@ -17,6 +17,10 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByType(PostType type, Pageable pageable);
+    long countByType(PostType type);
+
+    @Query("select coalesce(sum(p.likeCount), 0) from Post p")
+    Long sumLikeCount();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update posts set like_count = like_count + :delta " +

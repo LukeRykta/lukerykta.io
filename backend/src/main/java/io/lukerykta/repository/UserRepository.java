@@ -1,6 +1,9 @@
 package io.lukerykta.repository;
 
+import io.lukerykta.dto.AdminUserRowDto;
 import io.lukerykta.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +44,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
         where ur.user.id = :userId
     """)
     List<String> findRoleNamesInternal(@Param("userId") Long userId);
+
+    @Query("""
+        select new io.lukerykta.dto.AdminUserRowDto(
+            u.id,
+            u.avatarUrl,
+            u.email,
+            u.displayName,
+            u.provider,
+            u.createdAt,
+            u.lastAuthAt,
+            (select count(v) from UserVisitEvent v where v.user = u)
+        )
+        from User u
+    """)
+    Page<AdminUserRowDto> findAdminUserRows(Pageable pageable);
 }
