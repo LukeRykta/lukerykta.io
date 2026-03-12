@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,40 +27,69 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public List<PostSummaryDto> findTopProjects(int limit) {
-        int safeLimit = Math.max(1, Math.min(limit, 24));
-        Pageable page = PageRequest.of(0, safeLimit,
-            Sort.by(Sort.Order.desc("likeCount"), Sort.Order.desc("createdAt")));
+    public record LikeMutationResult(int likeCount, boolean likedByCurrentUser) {}
 
-        return postRepository.findByType(PostType.PROJECT, page).stream()
-            .map(this::toSummary)
+    public List<PostSummaryDto> findTopProjects(int limit, Long currentUserId) {
+        int safeLimit = Math.clamp(limit, 1, 24);
+        Pageable page = PageRequest.of(
+            0,
+            safeLimit,
+            Sort.by(Sort.Order.desc("likeCount"), Sort.Order.desc("createdAt"))
+        );
+
+        List<Post> posts = postRepository.findByType(PostType.PROJECT, page).stream().toList();
+
+        final Set<Long> likedPostIds;
+        if (currentUserId != null && !posts.isEmpty()) {
+            List<Long> postIds = posts.stream().map(Post::getId).toList();
+            likedPostIds = new HashSet<>(postRepository.findLikedPostIds(currentUserId, postIds));
+        } else {
+            likedPostIds = Set.of();
+        }
+
+        return posts.stream()
+            .map(post -> toSummary(post, likedPostIds.contains(post.getId())))
             .collect(Collectors.toList());
     }
 
-    @Transactional
-    public int incrementLike(Long postId) {
-        return adjustLikeCount(postId, 1);
+    public List<PostSummaryDto> findTopProjects(int limit) {
+        return findTopProjects(limit, null);
     }
 
     @Transactional
-    public int decrementLike(Long postId) {
-        return adjustLikeCount(postId, -1);
+    public LikeMutationResult likePost(Long postId, Long userId) {
+        requireExistingPost(postId);
+        int inserted = postRepository.insertLikeIfAbsent(postId, userId);
+        if (inserted > 0) {
+            postRepository.adjustLikeCount(postId, 1);
+        }
+        int likeCount = readLikeCount(postId);
+        return new LikeMutationResult(likeCount, true);
     }
 
-    private int adjustLikeCount(Long postId, int delta) {
-        log.debug("Adjusting like count delta={} for post={} ", delta, postId);
-        int updated = postRepository.adjustLikeCount(postId, delta);
+    @Transactional
+    public LikeMutationResult unlikePost(Long postId, Long userId) {
+        requireExistingPost(postId);
+        int deleted = postRepository.deleteLike(postId, userId);
+        if (deleted > 0) {
+            postRepository.adjustLikeCount(postId, -1);
+        }
+        int likeCount = readLikeCount(postId);
+        return new LikeMutationResult(likeCount, false);
+    }
+
+    private void requireExistingPost(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
+        }
+    }
+
+    private int readLikeCount(Long postId) {
         return postRepository.findLikeCount(postId)
-            .map(count -> {
-                if (updated == 0 && delta > 0) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
-                }
-                return count;
-            })
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
     }
 
-    private PostSummaryDto toSummary(Post post) {
+    private PostSummaryDto toSummary(Post post, boolean likedByCurrentUser) {
         return PostSummaryDto.builder()
             .id(post.getId())
             .type(post.getType())
@@ -67,6 +98,7 @@ public class PostService {
             .previewImageUrl(post.getPreviewImageUrl())
             .externalUrl(post.getExternalUrl())
             .likeCount(post.getLikeCount())
+            .likedByCurrentUser(likedByCurrentUser)
             .createdAt(post.getCreatedAt())
             .build();
     }

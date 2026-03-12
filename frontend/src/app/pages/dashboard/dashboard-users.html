@@ -1,0 +1,190 @@
+<div class="users-shell">
+  <div class="section-heading-row">
+    <div class="section-heading">
+      <p class="section-kicker" dashboardCharsReveal>Users</p>
+      <h2><app-dashboard-rolling-heading text="Registered accounts" /></h2>
+      <p dashboardCharsReveal [dashboardCharsRevealDelay]="0.08">
+        Paginated directory with sortable identity, provider, visit counts, first login, and last auth data.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="section-refresh"
+      [disabled]="loading()"
+      aria-label="Refresh user directory"
+      (click)="refreshUsers()">
+      <lucide-icon [img]="refreshIcon" size="15" [class.is-spinning]="loading()" />
+      <span>Refresh</span>
+    </button>
+  </div>
+
+  <div class="users-toolbar" aria-label="User directory controls">
+    <div class="toolbar-copy">
+      <p class="toolbar-stat">Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() || 0 }}</p>
+      <p class="toolbar-note">Sorted by {{ sortSummary() }}</p>
+    </div>
+
+    <div class="page-size" role="group" aria-label="Rows per page">
+      @for (option of pageSizeOptions; track option) {
+        <button
+          type="button"
+          class="page-size-button"
+          [class.is-active]="size() === option"
+          [disabled]="loading()"
+          (click)="setPageSize(option)">
+          {{ option }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading() && !users().length) {
+    <div class="dashboard-section-loader" role="status" aria-live="polite" aria-label="Loading user records">
+      <span class="dashboard-loader loader --5" aria-hidden="true"></span>
+      <span class="dashboard-loader-label">Loading user records...</span>
+    </div>
+  } @else if (error()) {
+    <p class="section-state section-state--error">{{ error() }}</p>
+  } @else if (!users().length) {
+    <p class="section-state">No users available yet.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('name')"
+                [attr.aria-label]="sortButtonLabel('name')"
+                (click)="toggleSort('name')">
+                <span>Name</span>
+                <lucide-icon [img]="sortIcon('name')" size="14"></lucide-icon>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('email')"
+                [attr.aria-label]="sortButtonLabel('email')"
+                (click)="toggleSort('email')">
+                <span>Email</span>
+                <lucide-icon [img]="sortIcon('email')" size="14"></lucide-icon>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('provider')"
+                [attr.aria-label]="sortButtonLabel('provider')"
+                (click)="toggleSort('provider')">
+                <span>OAuth</span>
+                <lucide-icon [img]="sortIcon('provider')" size="14"></lucide-icon>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('visits')"
+                [attr.aria-label]="sortButtonLabel('visits')"
+                (click)="toggleSort('visits')">
+                <span>Visits</span>
+                <lucide-icon [img]="sortIcon('visits')" size="14"></lucide-icon>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('firstLogin')"
+                [attr.aria-label]="sortButtonLabel('firstLogin')"
+                (click)="toggleSort('firstLogin')">
+                <span>First Login</span>
+                <lucide-icon [img]="sortIcon('firstLogin')" size="14"></lucide-icon>
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                [class.is-active]="isActiveSort('lastSeen')"
+                [attr.aria-label]="sortButtonLabel('lastSeen')"
+                (click)="toggleSort('lastSeen')">
+                <span>Last Seen</span>
+                <lucide-icon [img]="sortIcon('lastSeen')" size="14"></lucide-icon>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track trackUser($index, user)) {
+            <tr>
+              <td class="image-cell">
+                @if (shouldShowAvatar(user)) {
+                  <img
+                    class="user-avatar"
+                    [src]="user.avatarUrl"
+                    [alt]="userLabel(user)"
+                    loading="lazy"
+                    referrerpolicy="no-referrer"
+                    (error)="markAvatarFailed(user.id)">
+                } @else {
+                  <span class="avatar-fallback" aria-hidden="true">{{ userInitial(user) }}</span>
+                }
+              </td>
+              <td>{{ user.displayName || 'Unknown' }}</td>
+              <td>{{ user.email || 'No public email' }}</td>
+              <td>
+                <span class="provider-chip">{{ providerLabel(user.provider) }}</span>
+              </td>
+              <td>{{ user.visitCount }}</td>
+              <td>{{ user.firstLoginAt | date: 'MMM d, y' }}, {{ user.firstLoginAt | date: 'h:mm:ssa' | lowercase }}</td>
+              <td>{{ user.lastSeenAt | date: 'MMM d, y' }}, {{ user.lastSeenAt | date: 'h:mm:ssa' | lowercase }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (!loading() && !error() && users().length) {
+  <div class="pagination-bar">
+    <button
+      type="button"
+      class="page-nav"
+      [disabled]="loading() || !hasPrevious()"
+      (click)="goToPreviousPage()">
+      <lucide-icon [img]="chevronLeftIcon" size="15"></lucide-icon>
+      <span>Previous</span>
+    </button>
+
+    <div class="page-indicators" aria-label="Pagination">
+      @for (pageNumber of visiblePages(); track trackPage($index, pageNumber)) {
+        <button
+          type="button"
+          class="page-pill"
+          [class.is-active]="page() === pageNumber"
+          [disabled]="loading()"
+          (click)="goToPage(pageNumber)">
+          {{ pageNumber + 1 }}
+        </button>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="page-nav"
+      [disabled]="loading() || !hasNext()"
+      (click)="goToNextPage()">
+      <span>Next</span>
+      <lucide-icon [img]="chevronRightIcon" size="15"></lucide-icon>
+    </button>
+  </div>
+}

@@ -1,0 +1,14 @@
+:host {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.rolling-heading {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}

@@ -110,5 +110,4 @@ if (!process.env.NX_WRAPPER_SKIP_INSTALL) {
     ensureUpToDateInstallation();
 }
 
-// eslint-disable-next-line
 require('./installation/node_modules/nx/bin/nx');

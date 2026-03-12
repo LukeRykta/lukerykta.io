@@ -1,14 +1,26 @@
 {
+  "scripts": {
+    "prepare": "husky",
+    "test:backend": "pnpm exec nx test backend",
+    "test:frontend": "pnpm exec nx test frontend",
+    "test:e2e": "node scripts/e2e-with-report-hint.mjs",
+    "test:e2e:smoke": "node scripts/e2e-with-report-hint.mjs --grep @smoke",
+    "test:e2e:ui": "node scripts/e2e-with-report-hint.mjs --ui",
+    "test:e2e:report": "pnpm exec playwright show-report frontend-e2e/playwright-report",
+    "verify:push": "pnpm run test:backend && pnpm run test:frontend && pnpm run test:e2e:smoke"
+  },
   "devDependencies": {
-    "@angular-devkit/core": "~20.1.6",
-    "@nx/angular": "^21.4.1",
-    "@nx/workspace": "^21.4.1",
+    "@angular-devkit/core": "^21.2.0",
+    "@types/node": "^24.10.0",
+    "@playwright/test": "^1.56.1",
+    "@nx/angular": "22.5.3",
+    "@nx/workspace": "22.5.3",
     "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
-    "nx": "^21.4.1",
+    "nx": "22.5.3",
     "prettier": "^3.6.2"
   },
   "dependencies": {

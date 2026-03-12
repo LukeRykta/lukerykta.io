@@ -1,0 +1,25 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "frontend-e2e",
+  "root": "frontend-e2e",
+  "sourceRoot": "frontend-e2e/tests",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec playwright test --config=frontend-e2e/playwright.config.ts",
+        "forwardAllArgs": true
+      },
+      "outputs": [
+        "{projectRoot}/playwright-report",
+        "{projectRoot}/test-results"
+      ],
+      "cache": false
+    }
+  },
+  "implicitDependencies": [
+    "frontend"
+  ],
+  "tags": []
+}

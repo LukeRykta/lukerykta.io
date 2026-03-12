@@ -24,6 +24,8 @@ Thumbs.db
 logs/
 tmp/
 *.tmp
+node_modules/
+frontend/node_modules/
 
 # --- Backend (Spring Boot / Gradle) ---
 backend/.gradle/
@@ -82,3 +84,14 @@ infra/*_override.tf.json
 .angular
 
 .nx/cache
+.nx/workspace-data/
+.nx/installation/
+.husky/_/
+playwright-report/
+test-results/
+frontend-e2e/playwright-report/
+frontend-e2e/test-results/
+
+# --- Agent reports ---
+/AI-reports/
+

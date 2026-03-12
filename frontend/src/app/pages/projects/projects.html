@@ -1,0 +1,80 @@
+<div class="projects-page" data-testid="projects-page">
+  @for (slide of slides; track slide.id; let sectionIndex = $index) {
+    <section
+      #sectionEl
+      class="project-section"
+      [attr.aria-hidden]="sectionIndex === activeIndex() ? null : true"
+      [attr.data-testid]="'projects-section-' + sectionIndex">
+      <div #outerEl class="outer">
+        <div #innerEl class="inner">
+          <article
+            #bgEl
+            class="bg"
+            [style.--slide-start]="slide.colorStart"
+            [style.--slide-end]="slide.colorEnd"
+            [style.--slide-glow]="slide.glow"
+            [style.--slide-mesh]="slide.mesh">
+            <svg
+              class="bg-svg"
+              viewBox="0 0 1440 900"
+              preserveAspectRatio="xMidYMid slice"
+              aria-hidden="true">
+              <defs>
+                <linearGradient [attr.id]="'projects-grad-' + slide.id" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" [attr.stop-color]="slide.colorStart"></stop>
+                  <stop offset="100%" [attr.stop-color]="slide.colorEnd"></stop>
+                </linearGradient>
+                <radialGradient [attr.id]="'projects-glow-' + slide.id" cx="50%" cy="45%" r="60%">
+                  <stop offset="0%" [attr.stop-color]="slide.glow" stop-opacity="0.82"></stop>
+                  <stop offset="100%" [attr.stop-color]="slide.glow" stop-opacity="0"></stop>
+                </radialGradient>
+                <linearGradient [attr.id]="'projects-mesh-' + slide.id" x1="20%" y1="5%" x2="80%" y2="95%">
+                  <stop offset="0%" [attr.stop-color]="slide.mesh" stop-opacity="0.28"></stop>
+                  <stop offset="100%" [attr.stop-color]="slide.glow" stop-opacity="0.05"></stop>
+                </linearGradient>
+              </defs>
+              <rect width="1440" height="900" [attr.fill]="'url(#projects-grad-' + slide.id + ')'"></rect>
+              <circle cx="1120" cy="180" r="390" [attr.fill]="'url(#projects-glow-' + slide.id + ')'"></circle>
+              <path
+                d="M-90 735 C 200 592 358 829 590 694 C 752 599 980 651 1138 596 C 1311 535 1496 614 1540 655 L1540 980 L-90 980 Z"
+                [attr.fill]="'url(#projects-mesh-' + slide.id + ')'"></path>
+              <path
+                d="M0 0 L1440 0 L1440 215 C1260 268 1090 287 939 269 C741 246 578 185 369 222 C241 244 127 266 0 228 Z"
+                fill="#02050d"
+                fill-opacity="0.42"></path>
+            </svg>
+
+            <div class="texture-layer" aria-hidden="true"></div>
+            <div class="content">
+              <p class="slide-eyebrow">{{ slide.eyebrow }}</p>
+              <h2 #headingEl class="section-heading" [attr.data-testid]="'projects-heading-' + sectionIndex">
+                @for (char of slide.headingChars; track $index) {
+                  <span class="char">{{ char }}</span>
+                }
+              </h2>
+              <p class="summary">{{ slide.summary }}</p>
+              <ul class="tag-row" aria-label="Technology tags">
+                @for (tag of slide.tags; track tag) {
+                  <li>{{ tag }}</li>
+                }
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  }
+
+  <nav class="dot-nav" aria-label="Project sections">
+    @for (slide of slides; track slide.id; let sectionIndex = $index) {
+      <button
+        type="button"
+        class="dot"
+        [class.is-active]="sectionIndex === activeIndex()"
+        [attr.aria-label]="'Go to section ' + (sectionIndex + 1)"
+        [attr.data-testid]="'projects-dot-' + sectionIndex"
+        (click)="jumpTo(sectionIndex)"></button>
+    }
+  </nav>
+
+</div>

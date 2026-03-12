@@ -8,4 +8,5 @@ import lombok.Value;
 public class LikeResponse {
     Long postId;
     int likeCount;
+    boolean likedByCurrentUser;
 }

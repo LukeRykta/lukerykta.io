@@ -1,0 +1,124 @@
+<div class="overview-shell" [class.is-loading]="loading() && !overview()">
+  <div class="section-heading-row">
+    <div class="section-heading">
+      <p class="section-kicker" dashboardCharsReveal>Overview</p>
+      <h2><app-dashboard-rolling-heading text="Site statistics" /></h2>
+      <p dashboardCharsReveal [dashboardCharsRevealDelay]="0.08">
+        Baseline totals for accounts, visits, projects, and engagement.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="section-refresh"
+      [disabled]="loading()"
+      aria-label="Refresh overview data"
+      (click)="refreshOverview()">
+      <lucide-icon [img]="refreshIcon" size="15" [class.is-spinning]="loading()" />
+      <span>Refresh</span>
+    </button>
+  </div>
+
+  @if (loading() && !overview()) {
+    <div class="dashboard-section-loader" role="status" aria-live="polite" aria-label="Loading overview metrics">
+      <span class="dashboard-loader loader --5" aria-hidden="true"></span>
+      <span class="dashboard-loader-label">Loading overview metrics...</span>
+    </div>
+  } @else if (error()) {
+    <p class="section-state section-state--error">{{ error() }}</p>
+  } @else if (overview(); as stats) {
+    <div class="stats-grid">
+      <section class="visit-column" [class.is-expanded]="visitsExpanded()">
+        <article class="stat-card stat-card--highlight stat-card--visits">
+          <div class="visit-card-topline">
+            <span class="visit-label">
+              <lucide-icon [img]="activityIcon" size="15" />
+              <span>User Visits</span>
+            </span>
+            <button
+              type="button"
+              class="visit-toggle"
+              [attr.aria-expanded]="visitsExpanded()"
+              aria-controls="visit-breakdown"
+              (click)="toggleVisitBreakdown()">
+              <span>{{ visitsExpanded() ? 'Hide cadence' : 'View cadence' }}</span>
+              <lucide-icon #visitToggleIcon [img]="chevronDownIcon" size="15" />
+            </button>
+          </div>
+          <strong>{{ stats.totalVisits }}</strong>
+        </article>
+
+        <div
+          #visitBreakdown
+          id="visit-breakdown"
+          class="visit-breakdown"
+          [attr.aria-hidden]="!visitsExpanded()">
+          <article #visitMetricCard class="stat-card stat-card--visit-detail">
+            <span class="visit-detail-label">
+              <lucide-icon [img]="calendarClockIcon" size="15" />
+              <span>Today</span>
+            </span>
+            <strong>{{ stats.visitsToday }}</strong>
+          </article>
+          <article #visitMetricCard class="stat-card stat-card--visit-detail">
+            <span class="visit-detail-label">
+              <lucide-icon [img]="calendarDaysIcon" size="15" />
+              <span>This month</span>
+            </span>
+            <strong>{{ stats.visitsThisMonth }}</strong>
+          </article>
+          <article #visitMetricCard class="stat-card stat-card--visit-detail">
+            <span class="visit-detail-label">
+              <lucide-icon [img]="calendarRangeIcon" size="15" />
+              <span>This year</span>
+            </span>
+            <strong>{{ stats.visitsThisYear }}</strong>
+          </article>
+        </div>
+      </section>
+      <article class="stat-card">
+        <span>Total users</span>
+        <strong>{{ stats.totalUsers }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Projects</span>
+        <strong>{{ stats.totalProjects }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Total likes</span>
+        <strong>{{ stats.totalLikes }}</strong>
+      </article>
+    </div>
+
+    <section class="routes-panel">
+      <div class="routes-panel-heading">
+        <div>
+          <p class="section-kicker" dashboardCharsReveal>Route popularity</p>
+          <h3><app-dashboard-rolling-heading text="Top routes" /></h3>
+          <p dashboardCharsReveal [dashboardCharsRevealDelay]="0.08">
+            Anonymous and authenticated page views grouped by route path.
+          </p>
+        </div>
+      </div>
+
+      @if ((stats.topRoutes ?? []).length) {
+        <div class="route-list">
+          @for (route of stats.topRoutes; track route.routePath) {
+            <article class="route-row">
+              <div class="route-row-copy">
+                <code>{{ route.routePath }}</code>
+                <span>{{ route.uniqueVisitorCount }} unique visitors</span>
+              </div>
+              <div class="route-row-metric">
+                <strong>{{ route.viewCount }}</strong>
+                <span>views</span>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="section-state">No route views recorded yet.</p>
+      }
+    </section>
+  }
+</div>

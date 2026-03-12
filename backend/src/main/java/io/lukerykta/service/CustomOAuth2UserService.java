@@ -84,6 +84,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             if (name != null)   user.setDisplayName(name);
             if (avatar != null) user.setAvatarUrl(avatar);
             user.setActive(true);
+            user.markAuthenticatedNow();
 
             user = users.save(user);
 

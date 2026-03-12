@@ -1,0 +1,48 @@
+<div class="dashboard-page" [class.is-panel-collapsed]="panelCollapsed()">
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <button
+        type="button"
+        class="dashboard-toggle"
+        [attr.aria-expanded]="!panelCollapsed()"
+        [attr.aria-label]="panelCollapsed() ? 'Show dashboard panel' : 'Hide dashboard panel'"
+        (click)="togglePanel()">
+        <lucide-icon [img]="panelCollapsed() ? chevronsRightIcon : chevronsLeftIcon" size="16" />
+      </button>
+
+      <div class="sidebar-copy">
+        <p class="sidebar-kicker" dashboardCharsReveal>Admin Panel</p>
+        <h1><app-dashboard-rolling-heading text="Dashboard" /></h1>
+        <p dashboardCharsReveal [dashboardCharsRevealDelay]="0.08">
+          Control panel for site activity, account visibility, and user records.
+        </p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Dashboard sections">
+      <a
+        routerLink="/dashboard"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="is-active"
+        aria-label="Overview"
+        title="Overview"
+        class="sidebar-link">
+        <lucide-icon [img]="overviewIcon" size="16" />
+        <span class="sidebar-link-label">Overview</span>
+      </a>
+      <a
+        routerLink="/dashboard/users"
+        routerLinkActive="is-active"
+        aria-label="Users"
+        title="Users"
+        class="sidebar-link">
+        <lucide-icon [img]="usersIcon" size="16" />
+        <span class="sidebar-link-label">Users</span>
+      </a>
+    </nav>
+  </aside>
+
+  <section class="dashboard-content">
+    <router-outlet />
+  </section>
+</div>

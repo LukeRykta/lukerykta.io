@@ -11,6 +11,7 @@ export interface ProjectPost {
   previewImageUrl: string;
   externalUrl: string;
   likeCount: number;
+  likedByCurrentUser: boolean;
 }
 
 interface ProjectPostResponse {
@@ -20,6 +21,7 @@ interface ProjectPostResponse {
   previewImageUrl: string | null;
   externalUrl: string | null;
   likeCount: number;
+  likedByCurrentUser: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,13 +31,17 @@ export class ProjectPostsService {
   getTopProjects(limit = 4): Observable<ProjectPost[]> {
     const params = new HttpParams().set('limit', limit.toString());
     return this.http
-      .get<ProjectPostResponse[]>(apiUrl('/api/public/posts/projects'), { params })
+      .get<ProjectPostResponse[]>(apiUrl('/api/public/posts/projects'), {
+        params,
+        withCredentials: true
+      })
       .pipe(
         map((posts) =>
           posts.map((post) => ({
             ...post,
             previewImageUrl: post.previewImageUrl ?? '',
-            externalUrl: post.externalUrl ?? '#'
+            externalUrl: post.externalUrl ?? '#',
+            likedByCurrentUser: post.likedByCurrentUser
           }))
         )
       );

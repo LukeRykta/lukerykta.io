@@ -1,11 +1,11 @@
-<header class="fixed inset-x-0 top-0 z-50">
-    <nav class="bg-transparent backdrop-blur-sm text-white px-4 sm:px-6 lg:px-10 xl:px-12 py-3 flex items-center justify-between w-full">
+<header class="fixed inset-x-0 top-0 z-50 pointer-events-none">
+    <nav class="text-white px-4 sm:px-6 lg:px-10 xl:px-12 py-3 flex items-center justify-between w-full pointer-events-auto">
         <!-- Left: Logo + Brand -->
         <a routerLink="/" class="flex items-center gap-3 min-w-0">
             <img
                     ngSrc="assets/icons/logo_transparent_v1.png"
                     width="585" height="585" alt="Luke Ryktarsyk logo"
-                    class="h-8 md:h-9 lg:h-10 w-auto object-contain"
+                    class="brand-mark h-8 md:h-9 lg:h-10 w-auto object-contain"
                     priority=""
                     fetchpriority="high"
                     decoding="async"
@@ -14,10 +14,42 @@
 
         <!-- Desktop Nav Links -->
         <ul class="hidden md:flex gap-6 lg:gap-10">
-            <li><a routerLink="/" class="hover:text-blue-400 transition">Home</a></li>
-            <li><a routerLink="/projects" class="hover:text-blue-400 transition">Projects</a></li>
-            <li><a routerLink="/about" class="hover:text-blue-400 transition">About</a></li>
-            <li><a routerLink="/oauth" class="hover:text-blue-400 transition">Auth</a></li>
+            <li>
+                <a routerLink="/"
+                   routerLinkActive="is-active"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [class.is-active]="isActive('/')"
+                   class="nav-link">Home</a>
+            </li>
+            <li>
+                <a routerLink="/projects"
+                   routerLinkActive="is-active"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [class.is-active]="isActive('/projects')"
+                   class="nav-link">Projects</a>
+            </li>
+            <li>
+                <a routerLink="/about"
+                   routerLinkActive="is-active"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [class.is-active]="isActive('/about')"
+                   class="nav-link">About</a>
+            </li>
+            @if (isAdmin()) {
+                <li>
+                    <a routerLink="/dashboard"
+                       routerLinkActive="is-active"
+                       [class.is-active]="isActive('/dashboard', false)"
+                       class="nav-link">Dashboard</a>
+                </li>
+            }
+            <li>
+                <a routerLink="/oauth"
+                   routerLinkActive="is-active"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [class.is-active]="isActive('/oauth')"
+                   class="nav-link">Auth</a>
+            </li>
         </ul>
 
         <!-- Mobile Menu Button -->
@@ -35,11 +67,33 @@
     </nav>
 
     @if (menuOpen) {
-        <div class="md:hidden absolute inset-x-0 top-full bg-transparent backdrop-blur-sm text-white px-4 sm:px-6 py-3 space-y-3">
-            <a routerLink="/" class="block hover:text-blue-400 transition">Home</a>
-            <a routerLink="/projects" class="block hover:text-blue-400 transition">Projects</a>
-            <a routerLink="/about" class="block hover:text-blue-400 transition">About</a>
-            <a routerLink="/oauth" class="block hover:text-blue-400 transition">Auth</a>
+        <div class="mobile-menu md:hidden absolute top-full right-4 sm:right-6 py-2 space-y-3 pointer-events-auto">
+            <a routerLink="/"
+               routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }"
+               [class.is-active]="isActive('/')"
+               class="nav-link mobile-link">Home</a>
+            <a routerLink="/projects"
+               routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }"
+               [class.is-active]="isActive('/projects')"
+               class="nav-link mobile-link">Projects</a>
+            <a routerLink="/about"
+               routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }"
+               [class.is-active]="isActive('/about')"
+               class="nav-link mobile-link">About</a>
+            @if (isAdmin()) {
+                <a routerLink="/dashboard"
+                   routerLinkActive="is-active"
+                   [class.is-active]="isActive('/dashboard', false)"
+                   class="nav-link mobile-link">Dashboard</a>
+            }
+            <a routerLink="/oauth"
+               routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }"
+               [class.is-active]="isActive('/oauth')"
+               class="nav-link mobile-link">Auth</a>
         </div>
     }
 </header>
